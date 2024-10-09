@@ -27,7 +27,7 @@ class Mo_API_Authentication_AdvancedSettings {
 		?>
 		<div id="mo_api_authentication_password_setting_layout" class="border border-1 rounded-4 p-3 bg-white">
 			<div class="d-flex align-items-center gap-3 mb-3">
-				<h5 class="m-0">Third Party Plugin API Authentication/Integration</h4>
+				<h5 class="m-0">Advanced API Authentication Settings</h4>
 				<span class="mo_api_auth_inner_premium_label">Premium</span>
 			</div>
 			<p class="mb-4 fs-6">This section consists of advanced settings that can be used on the top of the authentication method configuration to provide more control over security.</p>
