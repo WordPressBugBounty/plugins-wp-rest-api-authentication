@@ -197,7 +197,7 @@ class Mo_API_Authentication_Jwt_Auth_Config {
 										<button type="button" class="btn btn-success fw-bold w-100 mo_rest_api_get_test_method_btn">GET</button>
 									</div>
 									<div class="col p-0">
-										<input class="form-control mo_test_config_input w-100" type="text" name="rest_endpoint_jwt_auth" id="rest_endpoint_jwt_auth" value="<?php echo esc_url( get_rest_url() ) . 'wp/v2/posts'; ?>" aria-readonly="true" readonly>
+										<input class="form-control mo_test_config_input w-100" type="text" name="rest_endpoint_jwt_auth" id="rest_endpoint_jwt_auth" value="<?php echo esc_url( get_rest_url() ) . 'wp/v2/posts'; ?>" aria-readonly="true">
 									</div>
 								</div>
 								<div class="d-grid justify-content-center my-3">

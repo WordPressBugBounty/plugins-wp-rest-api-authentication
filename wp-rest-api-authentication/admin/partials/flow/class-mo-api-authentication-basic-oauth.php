@@ -51,8 +51,12 @@ class Mo_API_Authentication_Basic_OAuth {
 							}
 							if ( ! is_wp_error( $valid_pass ) ) {
 								wp_set_current_user( $user->ID );
+								// The Protected API success request counter is increasing.
+								Mo_API_Authentication_Utils::increment_success_counter( Mo_API_Authentication_Constants::PROTECTED_API );
 								return true;
 							} else {
+								// Invalid credentials counter is increasing.
+								Mo_API_Authentication_Utils::increment_blocked_counter( Mo_API_Authentication_Constants::INVALID_CREDENTIALS );
 								$response = array(
 									'status'            => 'error',
 									'error'             => 'INVALID_PASSWORD',
@@ -62,6 +66,8 @@ class Mo_API_Authentication_Basic_OAuth {
 								wp_send_json( $response, 400 );
 							}
 						} else {
+							// Invalid credentials counter is increasing.
+							Mo_API_Authentication_Utils::increment_blocked_counter( Mo_API_Authentication_Constants::INVALID_CREDENTIALS );
 							$response = array(
 								'status'            => 'error',
 								'error'             => 'INVALID_USERNAME',
@@ -73,8 +79,12 @@ class Mo_API_Authentication_Basic_OAuth {
 					} elseif ( get_option( 'mo_api_authentication_authentication_key' ) === 'cid_secret' ) {
 						// client id and client secret.
 						if ( get_option( 'mo_api_auth_clientid' ) === $creds[0] && get_option( 'mo_api_auth_clientsecret' ) === $creds[1] ) {
+							// The Protected API success request counter is increasing.
+							Mo_API_Authentication_Utils::increment_success_counter( Mo_API_Authentication_Constants::PROTECTED_API );
 							return true;
 						} else {
+							// Invalid credentials counter is increasing.
+							Mo_API_Authentication_Utils::increment_blocked_counter( Mo_API_Authentication_Constants::INVALID_CREDENTIALS );
 							$response = array(
 								'status'            => 'error',
 								'error'             => 'INVALID_CLIENT_CREDENTIALS',
@@ -85,6 +95,8 @@ class Mo_API_Authentication_Basic_OAuth {
 						}
 					}
 				} else {
+					// Invalid credentials counter is increasing.
+					Mo_API_Authentication_Utils::increment_blocked_counter( Mo_API_Authentication_Constants::INVALID_CREDENTIALS );
 					$response = array(
 						'status'            => 'error',
 						'error'             => 'INVALID_TOKEN_FORMAT',
@@ -94,6 +106,8 @@ class Mo_API_Authentication_Basic_OAuth {
 					wp_send_json( $response, 401 );
 				}
 			} else {
+				// Invalid credentials counter is increasing.
+				Mo_API_Authentication_Utils::increment_blocked_counter( Mo_API_Authentication_Constants::INVALID_CREDENTIALS );
 				$response = array(
 					'status'            => 'error',
 					'error'             => 'INVALID_AUTHORIZATION_HEADER_TOKEN_TYPE',
@@ -103,6 +117,9 @@ class Mo_API_Authentication_Basic_OAuth {
 				wp_send_json( $response, 401 );
 			}
 		}
+		// Missing authorization header counter is increasing.
+		Mo_API_Authentication_Utils::increment_blocked_counter( Mo_API_Authentication_Constants::MISSING_AUTHORIZATION_HEADER );
+
 		$response = array(
 			'status'            => 'error',
 			'error'             => 'MISSING_AUTHORIZATION_HEADER',

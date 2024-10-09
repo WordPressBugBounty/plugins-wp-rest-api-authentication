@@ -38,8 +38,12 @@ class Mo_API_Authentication_TokenAPI {
 				$ip_token     = $authorization_header[1];
 				$bearer_token = get_option( 'mo_api_auth_bearer_token' );
 				if ( $ip_token === $bearer_token ) {
+					// The Protected API success request counter is increasing.
+					Mo_API_Authentication_Utils::increment_success_counter( Mo_API_Authentication_Constants::PROTECTED_API );
 					return true;
 				} else {
+					// Invalid credentials counter is increasing.
+					Mo_API_Authentication_Utils::increment_blocked_counter( Mo_API_Authentication_Constants::INVALID_CREDENTIALS );
 					$response = array(
 						'status'            => 'error',
 						'error'             => 'INVALID_API_KEY',
@@ -49,6 +53,8 @@ class Mo_API_Authentication_TokenAPI {
 					wp_send_json( $response, 401 );
 				}
 			} else {
+				// Invalid credentials counter is increasing.
+				Mo_API_Authentication_Utils::increment_blocked_counter( Mo_API_Authentication_Constants::INVALID_CREDENTIALS );
 				$response = array(
 					'status'            => 'error',
 					'error'             => 'INVALID_AUTHORIZATION_HEADER_TOKEN_TYPE',
@@ -58,6 +64,8 @@ class Mo_API_Authentication_TokenAPI {
 				wp_send_json( $response, 401 );
 			}
 		} else {
+			// Missing authorization header counter is increasing.
+			Mo_API_Authentication_Utils::increment_blocked_counter( Mo_API_Authentication_Constants::MISSING_AUTHORIZATION_HEADER );
 			$response = array(
 				'status'            => 'error',
 				'error'             => 'MISSING_AUTHORIZATION_HEADER',

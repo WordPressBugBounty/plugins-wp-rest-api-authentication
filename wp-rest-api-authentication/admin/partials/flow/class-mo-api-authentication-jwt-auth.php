@@ -40,6 +40,9 @@ class Mo_API_Authentication_JWT_Auth {
 				if ( $jwt->mo_api_auth_jwt_token_segment_validation( $jwt_token ) ) {
 					return $jwt->mo_api_auth_jwt_signature_validation( $jwt_token );
 				} else {
+					if ( Mo_API_Authentication_Utils::is_auditable_api_request( '/api/v1/token-validate' ) ) {
+						Mo_API_Authentication_Utils::increment_blocked_counter( Mo_API_Authentication_Constants::INVALID_CREDENTIALS );
+					}
 					$response = array(
 						'status'            => 'error',
 						'error'             => 'SEGMENT_FAULT',
@@ -49,6 +52,10 @@ class Mo_API_Authentication_JWT_Auth {
 					wp_send_json( $response, 401 );
 				}
 			} else {
+				// Invalid credentials counter is increasing.
+				if ( Mo_API_Authentication_Utils::is_auditable_api_request( '/api/v1/token-validate' ) ) {
+					Mo_API_Authentication_Utils::increment_blocked_counter( Mo_API_Authentication_Constants::INVALID_CREDENTIALS );
+				}
 				$response = array(
 					'status'            => 'error',
 					'error'             => 'INVALID_AUTHORIZATION_HEADER_TOKEN_TYPE',
@@ -57,6 +64,10 @@ class Mo_API_Authentication_JWT_Auth {
 				);
 				wp_send_json( $response, 401 );
 			}
+		}
+		// Missing authorization header counter is increasing.
+		if ( Mo_API_Authentication_Utils::is_auditable_api_request( '/api/v1/token-validate' ) ) {
+			Mo_API_Authentication_Utils::increment_blocked_counter( Mo_API_Authentication_Constants::MISSING_AUTHORIZATION_HEADER );
 		}
 		$response = array(
 			'status'            => 'error',
@@ -118,8 +129,14 @@ class Mo_API_Authentication_JWT_Auth {
 				$user_data = json_decode( $this->mo_api_authentication_base64_url_decode( $jwt_token[1] ) );
 				$user      = get_user_by( 'login', $user_data->name );
 				wp_set_current_user( $user->ID );
+				if ( Mo_API_Authentication_Utils::is_auditable_api_request( '/api/v1/token-validate' ) ) {
+					Mo_API_Authentication_Utils::increment_success_counter( Mo_API_Authentication_Constants::PROTECTED_API );
+				}
 				return true;
 			} else {
+				if ( Mo_API_Authentication_Utils::is_auditable_api_request( '/api/v1/token-validate' ) ) {
+					Mo_API_Authentication_Utils::increment_blocked_counter( Mo_API_Authentication_Constants::INVALID_CREDENTIALS );
+				}
 				$response = array(
 					'status'            => 'error',
 					'error'             => 'INVALID_SIGNATURE',

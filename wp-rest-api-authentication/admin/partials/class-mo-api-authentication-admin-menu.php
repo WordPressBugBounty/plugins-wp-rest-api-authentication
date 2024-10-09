@@ -25,6 +25,7 @@ require 'advanced/class-mo-api-authentication-advancedsettings.php';
 require 'advanced/class-mo-api-authentication-protectedrestapis.php';
 require 'custom-api-integration/class-mo-api-authentication-custom-api-integration.php';
 require 'custom-api-integration/class-mo-api-authentication-third-party-integrations.php';
+require 'auditing\class-mo-api-authentication-auditing.php';
 
 /**
  * Main menu
@@ -52,10 +53,10 @@ function mo_api_authentication_main_menu() {
 							<img src="<?php echo esc_url( dirname( plugin_dir_url( __FILE__ ) ) ); ?>/images/miniorange-full-logo.png" alt="miniOrange" width="" height="80px" class="d-inline-block align-text-top mx-3 py-0">
 						</a>
 						<span>
-							<a class="btn p-2 ms-1" href="admin.php?page=mo_api_authentication_settings&tab=postman" role="button" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Export Postman Samples"><img src="<?php echo esc_url( dirname( plugin_dir_url( __FILE__ ) ) ); ?>/images/postman.png" height="20px"> Postman-Samples</a>
-							<a class="btn p-2 ms-1" href="https://plugins.miniorange.com/wordpress-rest-api-authentication#rest-api-methods" role="button" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Learn more about the plugin"><img src="<?php echo esc_url( dirname( plugin_dir_url( __FILE__ ) ) ); ?>/images/know-how.png" height="20px"> Learn-More</a>
-							<a class="btn p-2 ms-1" href="https://wordpress.org/support/plugin/wp-rest-api-authentication/" target="__blank" role="button" data-bs-toggle="tooltip" data-bs-placement="bottom" title="WordPress Forum"><img src="<?php echo esc_url( dirname( plugin_dir_url( __FILE__ ) ) ); ?>/images/wordpress-logo.png" height="20px"> WordPress Forum</a>
-							<a class="btn p-2 ms-1" href="https://faq.miniorange.com/" role="button" data-bs-toggle="tooltip" data-bs-placement="bottom" title="FAQ"><img src="<?php echo esc_url( dirname( plugin_dir_url( __FILE__ ) ) ); ?>/images/faq.png" height="20px"> FAQ</a>
+							<a class="btn p-2 ms-1" href="admin.php?page=mo_api_authentication_settings&tab=postman" role="button" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Export Postman Samples" target="_blank"><img src="<?php echo esc_url( dirname( plugin_dir_url( __FILE__ ) ) ); ?>/images/postman.png" height="20px"> Postman-Samples</a>
+							<a class="btn p-2 ms-1" href="https://plugins.miniorange.com/wordpress-rest-api-authentication#rest-api-methods" role="button" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Learn more about the plugin" target="_blank"><img src="<?php echo esc_url( dirname( plugin_dir_url( __FILE__ ) ) ); ?>/images/know-how.png" height="20px"> Learn-More</a>
+							<a class="btn p-2 ms-1" href="https://wordpress.org/support/plugin/wp-rest-api-authentication/" target="__blank" role="button" data-bs-toggle="tooltip" data-bs-placement="bottom" title="WordPress Forum" target="_blank"><img src="<?php echo esc_url( dirname( plugin_dir_url( __FILE__ ) ) ); ?>/images/wordpress-logo.png" height="20px"> WordPress Forum</a>
+							<a class="btn p-2 ms-1" href="https://faq.miniorange.com/" role="button" data-bs-toggle="tooltip" data-bs-placement="bottom" title="FAQ" target="_blank"><img src="<?php echo esc_url( dirname( plugin_dir_url( __FILE__ ) ) ); ?>/images/faq.png" height="20px"> FAQ</a>
 						</span>
 					</div>
 				</nav>
@@ -70,6 +71,10 @@ function mo_api_authentication_main_menu() {
 				<a class="d-flex flex-column align-items-center text-decoration-none py-3 <?php echo ( 'protectedrestapis' === $currenttab ) ? 'mo_api_side_bar_select' : ''; ?>" href="admin.php?page=mo_api_authentication_settings&tab=protectedrestapis">
 					<img src="<?php echo esc_url( dirname( plugin_dir_url( __FILE__ ) ) ); ?>/images/shield.png" height="30px" width="30px">
 					<h6 class="text-white mt-2 mb-0">Protected REST APIs</h6>
+				</a>
+				<a class="d-flex flex-column align-items-center text-decoration-none py-3 <?php echo ( 'auditing' === $currenttab ) ? 'mo_api_side_bar_select' : ''; ?>" href="admin.php?page=mo_api_authentication_settings&tab=auditing">
+					<img src="<?php echo esc_url( dirname( plugin_dir_url( __FILE__ ) ) ); ?>/images/auditing.png" height="30px" width="30px">
+					<h6 class="text-white mt-2 mb-0">Analytics</h6>
 				</a>
 				<a class="d-flex flex-column align-items-center text-decoration-none py-3 <?php echo ( 'advancedsettings' === $currenttab ) ? 'mo_api_side_bar_select' : ''; ?>" href="admin.php?page=mo_api_authentication_settings&tab=advancedsettings">
 					<img src="<?php echo esc_url( dirname( plugin_dir_url( __FILE__ ) ) ); ?>/images/settings.png" height="30px" width="30px">
@@ -193,6 +198,8 @@ class Mo_API_Authentication_Admin_Menu {
 			Mo_API_Authentication_License::mo_api_authentication_licensing_page();
 		} elseif ( 'postman' === $currenttab ) {
 			Mo_API_Authentication_Postman::mo_api_authentication_postman_page();
+		} elseif ( 'auditing' === $currenttab ) {
+			Mo_API_Authentication_Auditing::mo_api_authentication_display_auditing_pie_charts();
 		}
 	}
 

@@ -79,7 +79,7 @@ class Mo_API_Authentication_Basic_Oauth_Config {
 							<div class="col-6 mo_rest_api_cursor_no_drop">
 								<div class="p-4 border border-1 rounded-3 d-flex flex-column justify-content-center align-items-center gap-2 text-center" onclick="moBasicAuthenticationClienCreds('cid_secret')">
 									<img src="<?php echo esc_url( plugin_dir_url( dirname( dirname( __DIR__ ) ) ) ); ?>/images/key.png" height="30px" width="30px">
-									<span class="mo_rest_api_primary_font">Username & Password with Base64 Encoding</span>
+									<span class="mo_rest_api_primary_font">Client ID & Secret with Base64 Encoding</span>
 								</div>
 								<div class="mo_api_auth_premium_label_main">
 									<div class="mo_api_auth_premium_label_internal">
@@ -90,7 +90,7 @@ class Mo_API_Authentication_Basic_Oauth_Config {
 							<div class="col-6 mo_rest_api_cursor_no_drop">
 								<div class="p-4 border border-1 rounded-3 d-flex flex-column justify-content-center align-items-center gap-2 text-center" onclick="moBasicAuthenticationClienCreds('cid_secret')">
 									<img src="<?php echo esc_url( plugin_dir_url( dirname( dirname( __DIR__ ) ) ) ); ?>/images/secure.png" height="30px" width="30px">
-									<span class="mo_rest_api_primary_font">Username & Password with Base64 Encoding</span>
+									<span class="mo_rest_api_primary_font">Client ID & Secret with HMAC Validation</span>
 								</div>
 								<div class="mo_api_auth_premium_label_main">
 									<div class="mo_api_auth_premium_label_internal">
@@ -127,7 +127,7 @@ class Mo_API_Authentication_Basic_Oauth_Config {
 									<p>Token Credentials Type:</p>
 								</div>
 								<div class="col">
-									<p><b>WordPress Username & Password</b></p>
+									<p><b id="mo_api_basicauth_token_type">WordPress Username & Password</b></p>
 								</div>
 							</div>
 							<div class="row">
@@ -210,7 +210,6 @@ class Mo_API_Authentication_Basic_Oauth_Config {
 			}
 
 			function moBasicAuthenticationMethodSave(action){
-
 				var data = {
 					'action': 'save_temporary_data',
 					'auth_method' : 'basic_auth',
@@ -232,7 +231,7 @@ class Mo_API_Authentication_Basic_Oauth_Config {
 				document.getElementById('basic_authentication_finish_stepper').classList.add('d-flex');
 
 
-				if(localStorage.getItem('mo_api_basic_token_type') == 'uname_pass' || localStorage.getItem('mo_api_basic_token_type') == ''){
+				if(localStorage.getItem('mo_api_basic_token_type') === 'uname_pass' || localStorage.getItem('mo_api_basic_token_type') === null){
 					document.getElementById('mo_api_basicauth_token_type').innerHTML = 'WordPress Username & Password';
 				}
 				else{

@@ -50,7 +50,7 @@ class Mo_API_Authentication_Utils {
 	 */
 	public function install_and_activate_caw_free() {
 		$response = array();
-		if ( ! empty( $_SERVER['REQUEST_METHOD'] ) && ! empty( $_POST['nonce'] ) && sanitize_text_field( wp_unslash( $_SERVER['REQUEST_METHOD'] ) ) === 'POST' && current_user_can( 'administrator' ) && wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['nonce'] ) ), 'mo_rest_api_install_and_activate_caw_free' ) ) {
+		if ( ! empty( $_SERVER['REQUEST_METHOD'] ) && ! empty( $_POST['nonce'] ) && sanitize_text_field( wp_unslash( $_SERVER['REQUEST_METHOD'] ) ) === 'POST' && current_user_can( 'manage_options' ) && wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['nonce'] ) ), 'mo_rest_api_install_and_activate_caw_free' ) ) {
 			$plugin_name   = 'custom-api-for-wp';
 			$download_link = $this->get_plugin_download_link_from_wp_org( $plugin_name );
 			if ( $download_link ) {
@@ -132,5 +132,54 @@ class Mo_API_Authentication_Utils {
 		} catch ( Exception $e ) {
 			return 'Error: ' . $e->getMessage();
 		}
+	}
+
+		/**
+	 * Increment the success counter for a specific API type.
+	 *
+	 * @param string $type The type of API (e.g., 'Open_API', 'Protected_API').
+	 */
+	public static function increment_success_counter( $type ) {
+		wp_cache_delete( 'api_access_counters', 'options' );
+		$counters = get_option( 'api_access_counters', array() );
+		$counters = is_array( $counters ) ? $counters : array();
+		if ( ! array_key_exists( Mo_API_Authentication_Constants::SUCCESS, $counters ) || ! array_key_exists( $type, $counters[ Mo_API_Authentication_Constants::SUCCESS ] ) ) {
+			$counters[ Mo_API_Authentication_Constants::SUCCESS ][ $type ] = 0;
+		}
+		++$counters[ Mo_API_Authentication_Constants::SUCCESS ][ $type ];
+		update_option( 'api_access_counters', $counters );
+	}
+
+	/**
+	 * Increment the failure counter for a specific failure type.
+	 *
+	 * @param string $type The type of failure (e.g., 'Missing_headers', 'Invalid_details').
+	 */
+	public static function increment_blocked_counter( $type ) {
+		wp_cache_delete( 'api_access_counters', 'options' );
+		$counters = get_option( 'api_access_counters', array() );
+		$counters = is_array( $counters ) ? $counters : array();
+		if ( ! array_key_exists( Mo_API_Authentication_Constants::BLOCKED, $counters ) || ! array_key_exists( $type, $counters[ Mo_API_Authentication_Constants::BLOCKED ] ) ) {
+			$counters[ Mo_API_Authentication_Constants::BLOCKED ][ $type ] = 0;
+		}
+		++$counters[ Mo_API_Authentication_Constants::BLOCKED ][ $type ];
+		update_option( 'api_access_counters', $counters );
+	}
+
+	/**
+	 * Checks if the current request URI does not match the provided API route.
+	 * This is used to determine if the request should be audited or tracked.
+	 *
+	 * @param string $api_route The API route to check for (e.g., '/api/v1/token-validate').
+	 * @return bool True if the request URI does not contain the provided API route, otherwise false.
+	 */
+	public static function is_auditable_api_request( $api_route ) {
+		if ( isset( $_SERVER['REQUEST_URI'] ) ) {
+			$request_uri = sanitize_text_field( wp_unslash( $_SERVER['REQUEST_URI'] ) );
+			if ( strpos( $request_uri, $api_route ) === false ) {
+				return true;
+			}
+		}
+		return false;
 	}
 }

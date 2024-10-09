@@ -103,6 +103,7 @@ class Miniorange_API_Authentication_Admin {
 		if ( isset( $_GET['page'] ) && 'mo_api_authentication_settings' === $_GET['page'] ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Using this to enqueue styles and script only on the plugin page.
 			wp_enqueue_script( 'mo_api_authentication_admin_bootstrap_bundle_script', plugins_url( 'js/bootstrap.bundle.min.js', __FILE__ ), MINIORANGE_API_AUTHENTICATION_VERSION, array(), '5.0.2', false );
 			wp_enqueue_script( 'mo_api_authentication_admin_settings_phone_script', plugins_url( 'js/phone.min.js', __FILE__ ), MINIORANGE_API_AUTHENTICATION_VERSION, array(), false, false );
+			wp_enqueue_script( 'mo_api_authentication_admin_settings_charts_script', plugins_url( 'js/charts.min.js', __FILE__ ), MINIORANGE_API_AUTHENTICATION_VERSION, array(), false, false );
 		}
 	}
 
@@ -133,6 +134,8 @@ class Miniorange_API_Authentication_Admin {
 			wp_enqueue_style( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'css/miniorange-api-authentication-admin.min.css', array(), $this->version, 'all' );
 			wp_enqueue_style( 'mo_api_authentication_bootstrap_css', plugins_url( 'css/bootstrap/bootstrap.min.css', __FILE__ ), array(), '5.3.3', false );
 		}
+		wp_enqueue_style( 'mo_api_authentication_admin_settings_feedback_style', plugins_url( 'css/miniorange-api-authentication-feedback-form.min.css', __FILE__ ), MINIORANGE_API_AUTHENTICATION_VERSION, array(), false, false );
+		wp_enqueue_style( 'mo_api_authentication_admin_settings_auditing_style', plugins_url( 'css/miniorange-api-authentication-auditing-notification.min.css', __FILE__ ), MINIORANGE_API_AUTHENTICATION_VERSION, array(), false, false );
 	}
 
 	/**
@@ -188,7 +191,7 @@ class Miniorange_API_Authentication_Admin {
 	 */
 	public function mo_api_auth_admin_menu() {
 
-		add_menu_page( 'API Authentication Settings ' . __( 'Configure Authentication', 'mo_api_authentication_settings' ), 'miniOrange API Authentication', 'administrator', 'mo_api_authentication_settings', array( $this, 'mo_api_auth_menu_options' ), plugin_dir_url( __FILE__ ) . 'images/miniorange.png' );
+		add_menu_page( 'API Authentication Settings ' . __( 'Configure Authentication', 'mo_api_authentication_settings' ), 'miniOrange API Authentication', 'manage_options', 'mo_api_authentication_settings', array( $this, 'mo_api_auth_menu_options' ), plugin_dir_url( __FILE__ ) . 'images/miniorange.png' );
 	}
 
 	/**
@@ -228,7 +231,8 @@ class Miniorange_API_Authentication_Admin {
 		return array_reduce(
 			self::get_route_protect_option(),
 			function ( $is_matched, $pattern ) use ( $current_route ) {
-				return $is_matched || (bool) preg_match( '@^' . htmlspecialchars_decode( $pattern ) . '$@i', $current_route );
+				$escaped_pattern = preg_quote( htmlspecialchars_decode( $pattern ), '@' );
+				return $is_matched || (bool) preg_match( '@^' . $escaped_pattern . '$@i', $current_route );
 			},
 			false
 		);
@@ -351,6 +355,8 @@ class Miniorange_API_Authentication_Admin {
 	 */
 	public function mo_api_auth_initialize_api_flow() {
 		if ( isset( $_SERVER['REQUEST_METHOD'] ) && 'OPTIONS' === $_SERVER['REQUEST_METHOD'] ) {
+			// The Open API success request counter is increasing.
+			Mo_API_Authentication_Utils::increment_success_counter( Mo_API_Authentication_Constants::OPEN_API );
 			$response = array(
 				'code'    => '200',
 				'status'  => 'success',
@@ -422,11 +428,11 @@ class Miniorange_API_Authentication_Admin {
 	 * @return void
 	 */
 	public function save_temporary_data() {
-		if ( ! empty( $_SERVER['REQUEST_METHOD'] ) && ! empty( $_POST['nonce'] ) && sanitize_text_field( wp_unslash( $_SERVER['REQUEST_METHOD'] ) ) === 'POST' && current_user_can( 'administrator' ) && wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['nonce'] ) ), 'mo_rest_api_temporal_data_nonce' ) ) {
+		if ( ! empty( $_SERVER['REQUEST_METHOD'] ) && ! empty( $_POST['nonce'] ) && sanitize_text_field( wp_unslash( $_SERVER['REQUEST_METHOD'] ) ) === 'POST' && current_user_can( 'manage_options' ) && wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['nonce'] ) ), 'mo_rest_api_temporal_data_nonce' ) ) {
 			if ( isset( $_POST['auth_method'] ) && sanitize_text_field( wp_unslash( $_POST['auth_method'] ) ) === 'basic_auth' ) {
 				$api_temp               = array();
 				$api_temp['algo']       = ! empty( $_POST['algo'] ) ? sanitize_text_field( wp_unslash( $_POST['algo'] ) ) : '';
-				$api_temp['token_type'] = ! empty( $_POST['token_type'] ) ? sanitize_text_field( wp_unslash( $_POST['token_type'] ) ) : '';
+				$api_temp['token_type'] = ! empty( $_POST['token_type'] ) ? sanitize_text_field( wp_unslash( $_POST['token_type'] ) ) : 'uname_pass';
 				update_option( 'mo_rest_api_ajax_method_data', $api_temp );
 			}
 			$response = array(
@@ -452,6 +458,16 @@ class Miniorange_API_Authentication_Admin {
 		}
 	}
 
+	/**
+	 * Includes and displays the API summary box on the all pages.
+	 *
+	 * @return void
+	 */
+	public static function include_api_access_summary_box() {
+		include_once plugin_dir_path( __FILE__ ) . 'partials/auditing/class-mo-api-auth-access-summary-box.php';
+
+		Mo_API_Summary_Box::display_summary_box();
+	}
 
 	/**
 	 * Remove registered user.
@@ -479,7 +495,7 @@ class Miniorange_API_Authentication_Admin {
 	 * @return void
 	 */
 	public function miniorange_api_authentication_save_settings() {
-		if ( ! empty( $_SERVER['REQUEST_METHOD'] ) && sanitize_text_field( wp_unslash( $_SERVER['REQUEST_METHOD'] ) ) === 'POST' && current_user_can( 'administrator' ) ) {
+		if ( ! empty( $_SERVER['REQUEST_METHOD'] ) && sanitize_text_field( wp_unslash( $_SERVER['REQUEST_METHOD'] ) ) === 'POST' && current_user_can( 'manage_options' ) ) {
 
 			if ( isset( $_POST['option'] ) && sanitize_text_field( wp_unslash( $_POST['option'] ) ) === 'mo_api_authentication_change_email_address' && isset( $_REQUEST['mo_api_authentication_change_email_address_form_fields'] ) && wp_verify_nonce( sanitize_text_field( wp_unslash( $_REQUEST['mo_api_authentication_change_email_address_form_fields'] ) ), 'mo_api_authentication_change_email_address_form' ) ) {
 				$this->miniorange_api_authentication_remove_registered_user();

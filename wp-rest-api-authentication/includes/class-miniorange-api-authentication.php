@@ -142,6 +142,19 @@ class Miniorange_Api_Authentication {
 	}
 
 	/**
+	 * Load constants file.
+	 */
+	private function load_constants() {
+		$constants_file = plugin_dir_path( __FILE__ ) . '../admin/partials/utils/class-mo-api-authentication-constants.php';
+
+		if ( file_exists( $constants_file ) ) {
+			require_once $constants_file;
+		} else {
+			error_log( 'Constants file not found: ' . $constants_file );
+		}
+	}
+
+	/**
 	 * Register all of the hooks related to the admin area functionality
 	 * of the plugin.
 	 *
@@ -150,6 +163,7 @@ class Miniorange_Api_Authentication {
 	 */
 	private function define_admin_hooks() {
 
+		$this->load_constants();
 		$plugin_admin = new Miniorange_API_Authentication_Admin( $this->get_plugin_name(), $this->get_version() );
 		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_styles' );
 		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_scripts' );
@@ -158,6 +172,7 @@ class Miniorange_Api_Authentication {
 		$this->loader->add_action( 'rest_api_init', $plugin_admin, 'register_rest_routes' );
 		$this->loader->add_action( 'rest_api_init', $plugin_admin, 'mo_api_auth_initialize_api_flow' );
 		$this->loader->add_action( 'wp_ajax_save_temporary_data', $plugin_admin, 'save_temporary_data' );
+		$this->loader->add_action( 'admin_notices', $plugin_admin, 'include_api_access_summary_box' );
 		$this->loader->add_action( 'wp_ajax_install_and_activate_caw_free', new Mo_API_Authentication_Utils(), 'install_and_activate_caw_free' );
 	}
 

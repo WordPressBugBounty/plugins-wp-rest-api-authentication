@@ -58,6 +58,8 @@ function mo_api_auth_method_get_token( $request ) {
 		$client_secret = sanitize_text_field( get_option( 'mo_api_authentication_jwt_client_secret' ) );
 
 		if ( false === $client_secret || '' === $client_secret ) {
+			// Invalid credentials counter is increasing.
+			Mo_API_Authentication_Utils::increment_blocked_counter( Mo_API_Authentication_Constants::INVALID_CREDENTIALS );
 			$response = array(
 				'status'            => 'error',
 				'error'             => 'BAD_REQUEST',
@@ -87,10 +89,14 @@ function mo_api_auth_method_get_token( $request ) {
 		if ( isset( $valid_pass ) && $valid_pass ) {
 			$token_data = '';
 			$token_data = mo_api_auth_create_jwt_token( $client_secret, $user );
+			// The Open API success request counter is increasing.
+			Mo_API_Authentication_Utils::increment_success_counter( Mo_API_Authentication_Constants::OPEN_API );
 			$response   = rest_ensure_response( $token_data );
 			echo wp_json_encode( $token_data );
 			exit;
 		} else {
+			// Invalid credentials counter is increasing.
+			Mo_API_Authentication_Utils::increment_blocked_counter( Mo_API_Authentication_Constants::INVALID_CREDENTIALS );
 			$response = array(
 				'status'            => 'error',
 				'error'             => 'INVALID_CREDENTIALS',
@@ -100,6 +106,8 @@ function mo_api_auth_method_get_token( $request ) {
 			wp_send_json( $response, 400 );
 		}
 	} else {
+		// Invalid credentials counter is increasing.
+		Mo_API_Authentication_Utils::increment_blocked_counter( Mo_API_Authentication_Constants::INVALID_CREDENTIALS );
 		$response = array(
 			'status'            => 'error',
 			'error'             => 'FORBIDDEN',
@@ -185,6 +193,8 @@ function mo_api_auth_restrict_rest_api_for_invalid_users() {
 	}
 
 	if ( get_option( 'mo_api_authentication_protectedrestapi_route_whitelist' ) && Miniorange_API_Authentication_Admin::protect_routes( true ) === true ) {
+		// The Open API success request counter is increasing.
+		Mo_API_Authentication_Utils::increment_success_counter( Mo_API_Authentication_Constants::OPEN_API );
 		return true;
 	}
 	Miniorange_API_Authentication_Admin::mo_api_auth_else();
@@ -207,6 +217,7 @@ function mo_api_auth_is_valid_request() {
 	}
 
 	if ( stripos( $url_and_params[0], '/wp/v2' ) === false && ! stripos( $url_and_params[0], '/syncito/v1' ) ) {
+		Mo_API_Authentication_Utils::increment_blocked_counter( Mo_API_Authentication_Constants::INVALID_CREDENTIALS );
 		if ( get_option( 'mo_rest_api_protect_migrate' ) ) {
 			$response = array(
 				'status'            => 'error',
