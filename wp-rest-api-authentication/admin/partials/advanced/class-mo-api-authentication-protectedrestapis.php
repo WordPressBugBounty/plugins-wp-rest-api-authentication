@@ -47,7 +47,7 @@ class Mo_API_Authentication_ProtectedRestAPIs {
 						</div>
 					</div>
 					<p class="fs-6">All the REST APIs listed below are protected from public access. You can uncheck the checkboxes to make it publicly accessible.</p>					</p>
-					<p class="fs-6"><b>Note: </b>The free plan supports only default WordPress endpoints. Upgrade to the<b><i><a href="admin.php?page=mo_api_authentication_settings&tab=licensing" style="color:#a83262"><u> All-Inclusive Plan </u></a></i></b>to control access to custom and third-party plugin endpoints, allowing you to block or allow public access.</p>
+					<p class="fs-6"><b>Note: </b>The free plan supports only default WordPress endpoints. Upgrade to the <b><i><a href="admin.php?page=mo_api_authentication_settings&tab=licensing" style="color:#a83262"><u>All-Inclusive Plan</u></a></i></b> to control access to custom and third-party plugin endpoints, allowing you to block or allow public access.</p>
 					<p class="fs-6"><b>On this website, the REST API root is <a href='<?php echo esc_attr( site_url() ) . '/wp-json'; ?>' target="__blank"><?php echo esc_attr( site_url() ) . '/wp-json'; ?></a></b></p>
 					<input type="hidden" name="option" value="mo_api_authentication_protected_apis_form">
 					<?php wp_nonce_field( 'ProtectedRestAPI_admin_nonce', 'ProtectedRestAPI_admin_nonce_fields' ); ?>
@@ -119,7 +119,7 @@ class Mo_API_Authentication_ProtectedRestAPIs {
 			update_option( 'mo_api_authentication_init_protected_apis', 'true' );
 		}
 		$blocked_routes = is_array( get_option( 'mo_api_authentication_protectedrestapi_route_whitelist' ) ) ? get_option( 'mo_api_authentication_protectedrestapi_route_whitelist' ) : array();
-		$blocked_routes = array_map( 'esc_html', wp_unslash( $blocked_routes ) );
+		$blocked_routes = array_map( 'esc_html', $blocked_routes );
 		?>
 			<div class="accordion" id="mo-rest-api-protected-api">
 				<?php if ( array_key_exists( 'wp/v2', $all_namespaces ) ) : ?>
@@ -134,7 +134,7 @@ class Mo_API_Authentication_ProtectedRestAPIs {
 							<div class="accordion-body" id="mo-caw-accordion-body-protected-apis-wp-v2">
 								<?php
 									$routes = array_keys( $wp_rest_server->get_routes( 'wp/v2' ) );
-									$routes = array_map( 'esc_html', wp_unslash( $routes ) );
+									$routes = array_map( 'esc_html', $routes );
 								?>
 								<?php if ( count( $routes ) > 0 ) : ?>
 									<?php foreach ( $routes as $index => $route ) : ?>
@@ -142,12 +142,12 @@ class Mo_API_Authentication_ProtectedRestAPIs {
 											<?php unset( $routes[0] ); ?>
 											<div class="form-check d-flex align-items-center my-2">
 												<input class="form-check-input" type="checkbox" id="mo-rest-api-select-all-wp/v2" name="" onchange="moRESTAPIselectAll(this,'wp/v2')" <?php echo count( array_intersect( $blocked_routes, $routes ) ) === count( $routes ) ? 'checked' : ''; ?>>
-												<label class="form-check-label" for="mo-rest-api-select-all-wp/v2"><?php echo esc_html( wp_unslash( $route ) ); ?></label>
+												<label class="form-check-label" for="mo-rest-api-select-all-wp/v2"><?php echo esc_html( $route ); ?></label>
 											</div>
 										<?php else : ?>
 											<div class="form-check d-flex align-items-center my-2 ms-3">
-												<input class="form-check-input mo-rest-api-select-all-wp/v2" type="checkbox" value="<?php echo esc_html( wp_unslash( $route ) ); ?>" id="<?php echo esc_html( wp_unslash( $route ) ); ?>" name="mo_rest_routes[]" <?php echo ! empty( $blocked_routes ) && in_array( esc_html( wp_unslash( $route ) ), $blocked_routes, true ) ? 'checked' : ''; ?>>
-												<label class="form-check-label" for="<?php echo esc_html( wp_unslash( $route ) ); ?>"><?php echo esc_html( wp_unslash( $route ) ); ?></label>
+												<input class="form-check-input mo-rest-api-select-all-wp/v2" type="checkbox" value="<?php echo esc_html( $route ); ?>" id="<?php echo esc_html( $route ); ?>" name="mo_rest_routes[]" <?php echo ! empty( $blocked_routes ) && in_array( esc_html( $route ), $blocked_routes, true ) ? 'checked' : ''; ?>>
+												<label class="form-check-label" for="<?php echo esc_html( $route ); ?>"><?php echo esc_html( $route ); ?></label>
 											</div>
 										<?php endif; ?>
 									<?php endforeach; ?>
@@ -178,7 +178,7 @@ class Mo_API_Authentication_ProtectedRestAPIs {
 	private static function unprotected_rest_api_display_route_checkboxes( &$all_namespaces ) {
 		$wp_rest_server = rest_get_server();
 		$blocked_routes = is_array( get_option( 'mo_api_authentication_protectedrestapi_route_whitelist' ) ) ? get_option( 'mo_api_authentication_protectedrestapi_route_whitelist' ) : array();
-		$blocked_routes = array_map( 'esc_html', wp_unslash( $blocked_routes ) );
+		$blocked_routes = array_map( 'esc_html', $blocked_routes );
 
 		$file_path = plugin_dir_path( __FILE__ ) . '..' . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'assets' . DIRECTORY_SEPARATOR . 'third-party-integrations.json';
 
@@ -233,7 +233,7 @@ class Mo_API_Authentication_ProtectedRestAPIs {
 						<?php foreach ( $all_namespaces as $namespace => $index ) : ?>
 							<?php
 								$routes = array_keys( $wp_rest_server->get_routes( $namespace ) );
-								$routes = array_map( 'esc_html', wp_unslash( $routes ) );
+								$routes = array_map( 'esc_html', $routes );
 							?>
 								<?php if ( count( $routes ) > 0 ) : ?>
 									<?php foreach ( $routes as $index => $route ) : ?>
@@ -241,12 +241,12 @@ class Mo_API_Authentication_ProtectedRestAPIs {
 											<?php unset( $routes[0] ); ?>
 											<div class="form-check d-flex align-items-center my-2">
 												<input class="form-check-input" type="checkbox" id="mo-rest-api-select-all-<?php echo esc_html( $namespace ); ?>" name="" onchange="moRESTAPIselectAll(this,'<?php echo esc_html( $namespace ); ?>')" <?php echo count( array_intersect( $blocked_routes, $routes ) ) === count( $routes ) ? 'checked' : ''; ?>>
-												<label class="form-check-label" for="mo-rest-api-select-all-<?php echo esc_html( $namespace ); ?>"><?php echo esc_html( wp_unslash( $route ) ); ?></label>
+												<label class="form-check-label" for="mo-rest-api-select-all-<?php echo esc_html( $namespace ); ?>"><?php echo esc_html( $route ); ?></label>
 											</div>
 										<?php else : ?>
 											<div class="form-check d-flex align-items-center my-2 ms-3">
-												<input class="form-check-input mo-rest-api-select-all-<?php echo esc_html( $namespace ); ?>" type="checkbox" name="mo_rest_routes[]" value="<?php echo esc_html( wp_unslash( $route ) ); ?>" id="<?php echo esc_html( wp_unslash( $route ) ); ?>" <?php echo ! empty( $blocked_routes ) && in_array( esc_html( wp_unslash( $route ) ), $blocked_routes, true ) ? 'checked' : ''; ?>>
-												<label class="form-check-label" for="<?php echo esc_html( wp_unslash( $route ) ); ?>"><?php echo esc_html( wp_unslash( $route ) ); ?></label>
+												<input class="form-check-input mo-rest-api-select-all-<?php echo esc_html( $namespace ); ?>" type="checkbox" name="mo_rest_routes[]" value="<?php echo esc_html( $route ); ?>" id="<?php echo esc_html( $route ); ?>" <?php echo ! empty( $blocked_routes ) && in_array( esc_html( $route ), $blocked_routes, true ) ? 'checked' : ''; ?>>
+												<label class="form-check-label" for="<?php echo esc_html( $route ); ?>"><?php echo esc_html( $route ); ?></label>
 											</div>
 										<?php endif; ?>
 									<?php endforeach; ?>
@@ -285,7 +285,7 @@ class Mo_API_Authentication_ProtectedRestAPIs {
 
 		if ( self::check_route_is_wp_standard_or_not( $route ) || get_option( 'mo_rest_api_protect_migrate' ) ) {
 
-			$is_route_checked = in_array( esc_html( wp_unslash( $route ) ), $blocked_routes, true );
+			$is_route_checked = in_array( esc_html( $route ), $blocked_routes, true );
 			return checked( $is_route_checked, true, false );
 		} else {
 			return false;
@@ -302,7 +302,7 @@ class Mo_API_Authentication_ProtectedRestAPIs {
 	public static function display_routes( $route_prefix, &$all_namespaces ) {
 		$wp_rest_server = rest_get_server();
 		$blocked_routes = is_array( get_option( 'mo_api_authentication_protectedrestapi_route_whitelist' ) ) ? get_option( 'mo_api_authentication_protectedrestapi_route_whitelist' ) : array();
-		$blocked_routes = array_map( 'esc_html', wp_unslash( $blocked_routes ) );
+		$blocked_routes = array_map( 'esc_html', $blocked_routes );
 
 		$count = 0;
 
@@ -310,7 +310,7 @@ class Mo_API_Authentication_ProtectedRestAPIs {
 			if ( 0 === strpos( $namespace, $route_prefix ) ) {
 				++$count;
 				$routes = array_keys( $wp_rest_server->get_routes( $namespace ) );
-				$routes = array_map( 'esc_html', wp_unslash( $routes ) );
+				$routes = array_map( 'esc_html', $routes );
 				if ( count( $routes ) > 0 ) {
 					foreach ( $routes as $index => $route ) {
 						?>
@@ -318,12 +318,12 @@ class Mo_API_Authentication_ProtectedRestAPIs {
 							<?php unset( $routes[0] ); ?>
 							<div class="form-check d-flex align-items-center my-2">
 								<input class="form-check-input" type="checkbox" id="mo-rest-api-select-all-<?php echo esc_html( $namespace ); ?>" name="" onchange="moRESTAPIselectAll(this,'<?php echo esc_html( $namespace ); ?>')" <?php echo count( array_intersect( $blocked_routes, $routes ) ) === count( $routes ) ? 'checked' : ''; ?>>
-								<label class="form-check-label" for="mo-rest-api-select-all-<?php echo esc_html( $namespace ); ?>"><?php echo esc_html( wp_unslash( $route ) ); ?></label>
+								<label class="form-check-label" for="mo-rest-api-select-all-<?php echo esc_html( $namespace ); ?>"><?php echo esc_html( $route ); ?></label>
 							</div>
 						<?php else : ?>
 							<div class="form-check d-flex align-items-center my-2 ms-3">
-								<input class="form-check-input mo-rest-api-select-all-<?php echo esc_html( $namespace ); ?>" type="checkbox" name="mo_rest_routes[]" value="<?php echo esc_html( wp_unslash( $route ) ); ?>" id="<?php echo esc_html( wp_unslash( $route ) ); ?>" <?php echo ! empty( $blocked_routes ) && in_array( esc_html( wp_unslash( $route ) ), $blocked_routes, true ) ? 'checked' : ''; ?>>
-								<label class="form-check-label" for="<?php echo esc_html( wp_unslash( $route ) ); ?>"><?php echo esc_html( wp_unslash( $route ) ); ?></label>
+								<input class="form-check-input mo-rest-api-select-all-<?php echo esc_html( $namespace ); ?>" type="checkbox" name="mo_rest_routes[]" value="<?php echo esc_html( $route ); ?>" id="<?php echo esc_html( $route ); ?>" <?php echo ! empty( $blocked_routes ) && in_array( esc_html( $route ), $blocked_routes, true ) ? 'checked' : ''; ?>>
+								<label class="form-check-label" for="<?php echo esc_html( $route ); ?>"><?php echo esc_html( $route ); ?></label>
 							</div>
 						<?php endif; ?>
 						<?php

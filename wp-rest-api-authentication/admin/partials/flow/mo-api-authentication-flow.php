@@ -60,12 +60,7 @@ function mo_api_authentication_config_app_settings() {
 			update_option( 'mo_api_auth_message_flag', 1 );
 		} elseif ( ( isset( $_POST['option'] ) && sanitize_text_field( wp_unslash( $_POST['option'] ) ) === 'mo_api_authentication_protected_apis_form' ) && isset( $_REQUEST['ProtectedRestAPI_admin_nonce_fields'] ) && wp_verify_nonce( sanitize_text_field( wp_unslash( $_REQUEST['ProtectedRestAPI_admin_nonce_fields'] ) ), 'ProtectedRestAPI_admin_nonce' ) ) {
 			// Catch the routes that should be protected.
-			$protected_rest_routes = ( isset( $_POST['mo_rest_routes'] ) ) ? array_map( 'esc_html', wp_unslash( $_POST['mo_rest_routes'] ) ) : null; //phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- Not sanitizing the data as it will remove the brackets present in the regular expression of REST API endpoint.
-
-			$wp_rest_server = rest_get_server();
-			$all_routes     = array_keys( $wp_rest_server->get_routes() );
-
-			$unsecured_routes = array_map( 'esc_html', array_diff( $all_routes, $protected_rest_routes ) );
+			$protected_rest_routes = isset( $_POST['mo_rest_routes'] ) ? array_map( 'esc_html', wp_unslash( $_POST['mo_rest_routes'] ) ) : null; //phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- Not sanitizing the data as it will remove the brackets present in the regular expression of REST API endpoint.
 
 			// If resetting or protect is empty, clear the option and exit the function.
 			if ( empty( $protected_rest_routes ) || isset( $_POST['reset'] ) ) {

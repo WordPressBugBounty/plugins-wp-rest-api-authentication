@@ -231,8 +231,7 @@ class Miniorange_API_Authentication_Admin {
 		return array_reduce(
 			self::get_route_protect_option(),
 			function ( $is_matched, $pattern ) use ( $current_route ) {
-				$escaped_pattern = preg_quote( htmlspecialchars_decode( $pattern ), '@' );
-				return $is_matched || (bool) preg_match( '@^' . $escaped_pattern . '$@i', $current_route );
+				return $is_matched || (bool) preg_match( '#^' . htmlspecialchars_decode( $pattern ) . '$#i', $current_route );
 			},
 			false
 		);

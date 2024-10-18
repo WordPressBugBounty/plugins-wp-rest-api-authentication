@@ -11,7 +11,7 @@
  * Plugin Name:       WordPress REST API Authentication
  * Plugin URI:        wp-rest-api-authentication
  * Description:       WordPress REST API Authentication secures rest API access for unauthorized users using OAuth 2.0, Basic Auth, JWT, API Key. Also reduces potential attack factors to the respective site.
- * Version:           3.5.1
+ * Version:           3.5.3
  * Author:            miniOrange
  * Author URI:        https://www.miniorange.com
  * License:           MIT/Expat
@@ -33,7 +33,7 @@ if ( ! defined( 'WPINC' ) ) {
  * Start at version 1.0.0 and use SemVer - https://semver.org
  * Rename this for your plugin and update it as you release new versions.
  */
-define( 'MINIORANGE_API_AUTHENTICATION_VERSION', '3.5.1' );
+define( 'MINIORANGE_API_AUTHENTICATION_VERSION', '3.5.3' );
 
 /**
  * The code that runs during plugin activation.
@@ -55,7 +55,7 @@ if ( isset( $_GET['page'] ) && sanitize_text_field( wp_unslash( $_GET['page'] ) 
  * @return void
  */
 function mo_api_auth_activate_miniorange_api_authentication() {
-	mo_rest_api_set_cron_job();
+	update_option( 'mo_api_auth_summary_box_close_time', 0 );
 	require_once plugin_dir_path( __FILE__ ) . 'includes/class-miniorange-api-authentication-activator.php';
 	Miniorange_Api_Authentication_Activator::activate();
 }
@@ -70,6 +70,8 @@ function mo_api_auth_deactivate_miniorange_api_authentication() {
 	wp_clear_scheduled_hook( 'mo_api_display_the_popup' );
 	require_once plugin_dir_path( __FILE__ ) . 'includes/class-miniorange-api-authentication-deactivator.php';
 	Miniorange_Api_Authentication_Deactivator::mo_api_authentication_deactivate();
+	require_once plugin_dir_path( __FILE__ ) . 'includes/class-miniorange-api-authentication-cron-manager.php';
+	Miniorange_Api_Authentication_Cron_Manager::clear_daily_cron();
 }
 
 add_action( 'admin_enqueue_scripts', 'mo_api_auth_plugin_settings_style' );
@@ -79,7 +81,8 @@ register_deactivation_hook( __FILE__, 'mo_api_auth_deactivate_miniorange_api_aut
 remove_action( 'admin_notices', 'mo_api_auth_success_message' );
 remove_action( 'admin_notices', 'mo_api_auth_error_message' );
 add_action( 'admin_print_footer_scripts-plugins.php', 'mo_api_authentication_feedback_request' );
-add_action( 'mo_api_display_the_popup', 'mo_rest_api_scheduled_task' );
+add_action( 'wp_ajax_mo_api_auth_close_summary_box', 'mo_api_auth_close_summary_box' );
+
 /**
  * The core plugin class that is used to define internationalization,
  * admin-specific hooks, and public-facing site hooks.
@@ -181,26 +184,6 @@ function mo_api_auth_show_error_message() {
 }
 
 /**
- * Set cron job.
- *
- * @return void
- */
-function mo_rest_api_set_cron_job() {
-	if ( ! wp_next_scheduled( 'mo_api_display_the_popup' ) ) {
-		wp_schedule_event( time() + 60, 'daily', 'mo_api_display_the_popup' ); // update timestamp and name according to interval.
-	}
-}
-
-/**
- * Handle scheduled task.
- *
- * @return void
- */
-function mo_rest_api_scheduled_task() {
-	update_option( 'mo_rest_api_show_popup', 1 );
-}
-
-/**
  * Initialize JWT settings.
  *
  * @return void
@@ -210,4 +193,12 @@ function mo_initialize_jwt_settings() {
 		update_option( 'mo_api_authentication_jwt_client_secret', stripslashes( wp_generate_password( 32, false, false ) ) );
 		update_option( 'mo_api_authentication_jwt_signing_algorithm', 'HS256' );
 	}
+}
+
+/**
+ * Ajax handler to store the close time in the database.
+ */
+function mo_api_auth_close_summary_box() {
+	update_option( 'mo_api_auth_summary_box_close_time', time() );
+	wp_send_json_success();
 }

@@ -123,6 +123,8 @@ class Miniorange_Api_Authentication {
 		require_once plugin_dir_path( __DIR__ ) . 'admin/partials/utils/class-mo-api-authentication-utils.php';
 
 		$this->loader = new Miniorange_Api_Authentication_Loader();
+
+		require_once plugin_dir_path( __DIR__ ) . 'includes/class-miniorange-api-authentication-cron-manager.php';
 	}
 
 	/**
@@ -174,6 +176,7 @@ class Miniorange_Api_Authentication {
 		$this->loader->add_action( 'wp_ajax_save_temporary_data', $plugin_admin, 'save_temporary_data' );
 		$this->loader->add_action( 'admin_notices', $plugin_admin, 'include_api_access_summary_box' );
 		$this->loader->add_action( 'wp_ajax_install_and_activate_caw_free', new Mo_API_Authentication_Utils(), 'install_and_activate_caw_free' );
+		$cron_manager = new Miniorange_Api_Authentication_Cron_Manager();
 	}
 
 	/**

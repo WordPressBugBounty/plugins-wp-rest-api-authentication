@@ -33,6 +33,12 @@ class Mo_API_Summary_Box {
 	 */
 	public static function display_summary_box() {
 
+		// Check if the summary box was closed within the last 7 days.
+		$close_time = get_option( 'mo_api_auth_summary_box_close_time', 0 );
+		if ( $close_time > 0 && ( time() - $close_time ) < ( 7 * DAY_IN_SECONDS ) ) {
+			return;
+		}
+
 		$current_url = isset( $_SERVER['REQUEST_URI'] ) ? esc_url_raw( wp_unslash( $_SERVER['REQUEST_URI'] ) ) : '';
 
 		if ( strpos( $current_url, 'admin.php' ) !== false ) {
@@ -55,7 +61,7 @@ class Mo_API_Summary_Box {
 		$total_apis = $total_success + $total_blocked;
 
 		?>
-		<div class="mo-api-summary-box">
+		<div class="mo-api-summary-box" id="mo-api-summary-box">
 			<div class="mo-api-summary-logo">
 				<img src="<?php echo esc_url( plugin_dir_url( dirname( __DIR__ ) ) . 'images/miniorange-logo.png' ); ?>" class="api-logo">
 			</div>
@@ -80,8 +86,28 @@ class Mo_API_Summary_Box {
 			</div>
 			<div class="mo-api-summary-box-button">
 			<a href="<?php echo esc_url( admin_url( 'admin.php?page=mo_api_authentication_settings&tab=auditing' ) ); ?>">View Details</a>
-			</div>
 		</div>
+			<span id="mo-api-summary-close">&times;</span>
+		</div>
+		<script>
+			(function($) {
+				$(document).ready(function() {
+					$('#mo-api-summary-close').on('click', function(e) {
+						e.preventDefault();
+						var data = {
+							action: 'mo_api_auth_close_summary_box'
+						};
+
+						$.post(ajaxurl, data, function(response) {
+							if (response.success) {
+								$('.mo-api-summary-box').hide();
+								location.reload();
+							}
+						});
+					});
+				});
+			})(jQuery);
+		</script>
 		<?php
 	}
 }
