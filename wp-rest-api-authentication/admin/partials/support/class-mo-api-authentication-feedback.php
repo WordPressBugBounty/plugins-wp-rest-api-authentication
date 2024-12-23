@@ -116,7 +116,7 @@ class Mo_API_Authentication_Feedback {
 						</div>
 					</div>
 					<div class="mo_api_auth_modal-footer">
-						<input id="mo_skip_feedback" type="button" name="miniorange_feedback_skip" class="button" value="Skip" onclick='mo_rest_api_submit_skip_form();'  style="background-color: transparent;color:#0073aa;"/>
+						<input id="mo_skip_feedback" type="button" name="miniorange_feedback_skip" class="button" value="Skip and deactivate" style="background-color: transparent;color:#0073aa;"/>
 						<input type="submit" name="miniorange_feedback_submit" class=" button-primary " style="margin-left: auto;"  value="Submit"/>
 					</div>
 				</form>
@@ -132,11 +132,6 @@ class Mo_API_Authentication_Feedback {
 				document.querySelector('#mo_api_auth_query_mail').removeAttribute('readonly');
 				document.querySelector('#mo_api_auth_query_mail').focus();
 				return false;
-			}
-
-			function mo_rest_api_submit_skip_form(){
-				document.getElementById('mo_api_feedback_modal').style.display = "none";
-				jQuery('#mo_api_feedback_form_close').submit();
 			}
 
 			jQuery(document).ready(function() {
@@ -172,6 +167,7 @@ class Mo_API_Authentication_Feedback {
 
 				mo_skip_feedback.onclick = function () {
 					mo_api_feedback_modal.style.display = "none";
+					jQuery('#mo_api_feedback_form_close').submit();
 				}
 
 				window.onclick = function (event) {

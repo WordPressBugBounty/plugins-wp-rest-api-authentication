@@ -189,6 +189,13 @@ function mo_api_authentication_base64_url_encode( $text ) {
 function mo_api_auth_restrict_rest_api_for_invalid_users() {
 
 	if ( is_user_logged_in() && empty( isset( $_GET['mo_rest_api_test_config'] ) ? sanitize_text_field( wp_unslash( $_GET['mo_rest_api_test_config'] ) ) : '' ) ) { //phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Ignoring nonce validation as we are fetching data from URL and not form submission
+		if ( get_option( 'mo_api_authentication_protectedrestapi_route_whitelist' ) && Miniorange_API_Authentication_Admin::protect_routes( true ) === true ) {
+			// The Open API success request counter is increasing.
+			Mo_API_Authentication_Utils::increment_success_counter( Mo_API_Authentication_Constants::OPEN_API );
+		} else {
+			// The Protected API success request counter is increasing.
+			Mo_API_Authentication_Utils::increment_success_counter( Mo_API_Authentication_Constants::PROTECTED_API );
+		}
 		return true;
 	}
 
