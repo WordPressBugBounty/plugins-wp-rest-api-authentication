@@ -11,7 +11,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-require_once plugin_dir_path( __DIR__ ) . 'admin\partials\notices\class-mo-api-authentication-notices-utils.php';
+require_once plugin_dir_path( __DIR__ ) . 'admin/partials/notices/class-mo-api-authentication-notices-utils.php';
 
 /**
  * Cron Manager Class for Miniorange API Authentication Plugin
