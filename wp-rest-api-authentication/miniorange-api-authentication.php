@@ -11,7 +11,7 @@
  * Plugin Name:       WordPress REST API Authentication
  * Plugin URI:        wp-rest-api-authentication
  * Description:       WordPress REST API Authentication secures rest API access for unauthorized users using OAuth 2.0, Basic Auth, JWT, API Key. Also reduces potential attack factors to the respective site.
- * Version:           3.5.4
+ * Version:           3.6.0
  * Author:            miniOrange
  * Author URI:        https://www.miniorange.com
  * License:           MIT/Expat
@@ -33,7 +33,7 @@ if ( ! defined( 'WPINC' ) ) {
  * Start at version 1.0.0 and use SemVer - https://semver.org
  * Rename this for your plugin and update it as you release new versions.
  */
-define( 'MINIORANGE_API_AUTHENTICATION_VERSION', '3.5.4' );
+define( 'MINIORANGE_API_AUTHENTICATION_VERSION', '3.6.0' );
 
 /**
  * The code that runs during plugin activation.
@@ -56,6 +56,7 @@ if ( isset( $_GET['page'] ) && sanitize_text_field( wp_unslash( $_GET['page'] ) 
  */
 function mo_api_auth_activate_miniorange_api_authentication() {
 	update_option( 'mo_api_auth_summary_box_close_time', 0 );
+	update_option( 'mo_api_auth_special_plan_notice_close_time', 0 );
 	require_once plugin_dir_path( __FILE__ ) . 'includes/class-miniorange-api-authentication-activator.php';
 	Miniorange_Api_Authentication_Activator::activate();
 }
@@ -81,7 +82,7 @@ register_deactivation_hook( __FILE__, 'mo_api_auth_deactivate_miniorange_api_aut
 remove_action( 'admin_notices', 'mo_api_auth_success_message' );
 remove_action( 'admin_notices', 'mo_api_auth_error_message' );
 add_action( 'admin_print_footer_scripts-plugins.php', 'mo_api_authentication_feedback_request' );
-add_action( 'wp_ajax_mo_api_auth_close_summary_box', 'mo_api_auth_close_summary_box' );
+add_action( 'wp_ajax_mo_api_auth_close_admin_notices', 'mo_api_auth_close_admin_notices' );
 
 /**
  * The core plugin class that is used to define internationalization,
@@ -198,7 +199,7 @@ function mo_initialize_jwt_settings() {
 /**
  * Ajax handler to store the close time in the database.
  */
-function mo_api_auth_close_summary_box() {
-	update_option( 'mo_api_auth_summary_box_close_time', time() );
+function mo_api_auth_close_admin_notices() {
+	update_option( sanitize_text_field( wp_unslash( $_POST['trigger'] ) ), time() ); //phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Ignoring nonce validation because we are getting data from AJAX request.
 	wp_send_json_success();
 }

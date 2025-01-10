@@ -119,7 +119,7 @@ function mo_api_authentication_main_menu() {
 			$mo_api_main_dashboard_css = 'mo_api_main_dashboard2';
 		} else {
 			$mo_licensing_width        = 'width:73%';
-			$mo_api_main_dashboard_css = 'mo_api_main_dashboard';
+			$mo_api_main_dashboard_css = 'mo_api_main_dashboard me-3';
 		}
 
 		?>

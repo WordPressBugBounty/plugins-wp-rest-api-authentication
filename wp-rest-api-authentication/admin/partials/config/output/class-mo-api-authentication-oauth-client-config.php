@@ -23,8 +23,8 @@ class Mo_API_Authentication_OAuth_Client_Config {
 		?>
 		<div id="mo_api_oauth_authentication_support_layout" class="border border-1 rounded-4 p-3">
 			<form method="post">
-				<input type="hidden" name="action" id="mo_api_oauth2auth_save_config_input" value="Save OAuth2 Auth">
-				<?php wp_nonce_field( 'mo_api_oAuth_authentication_method_config', 'mo_api_oAuth_authentication_method_config_fields' ); ?>	
+				<input type="hidden" name="action" id="mo_api_oauth2auth_save_config_inputs" value="Save OAuth2 Auth">
+				<?php wp_nonce_field( 'mo_api_oAuth_authentication_method_config', 'mo_api_oAuth_authentication_method_config_field' ); ?>	
 				<div class="d-flex align-items-center mb-3 justify-content-between">
 					<div class="d-flex justify-content-between gap-2 flex-column">
 						<h5 class="m-0">

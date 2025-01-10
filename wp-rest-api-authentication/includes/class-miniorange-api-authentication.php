@@ -62,6 +62,7 @@ class Miniorange_Api_Authentication {
 	 * @return void
 	 */
 	public function __construct() {
+		$this->plugin_name = 'miniorange-api-authentication';
 		if ( defined( 'MINIORANGE_API_AUTHENTICATION_VERSION' ) ) {
 			$this->version = MINIORANGE_API_AUTHENTICATION_VERSION;
 		} else {
@@ -72,12 +73,14 @@ class Miniorange_Api_Authentication {
 			update_option( 'mo_rest_api_protect_migrate', 1 );
 		}
 
-		update_option( 'mo_api_authentication_current_plugin_version ', $this->version );
-		$this->plugin_name = 'miniorange-api-authentication';
-
 		$this->load_dependencies();
 		$this->set_locale();
 		$this->define_admin_hooks();
+
+		if ( $mo_rest_old_version < MINIORANGE_API_AUTHENTICATION_VERSION ) {
+			update_option( 'mo_api_authentication_old_plugin_version', $mo_rest_old_version );
+		}
+		update_option( 'mo_api_authentication_current_plugin_version', $this->version );
 	}
 
 	/**
@@ -174,7 +177,7 @@ class Miniorange_Api_Authentication {
 		$this->loader->add_action( 'rest_api_init', $plugin_admin, 'register_rest_routes' );
 		$this->loader->add_action( 'rest_api_init', $plugin_admin, 'mo_api_auth_initialize_api_flow' );
 		$this->loader->add_action( 'wp_ajax_save_temporary_data', $plugin_admin, 'save_temporary_data' );
-		$this->loader->add_action( 'admin_notices', $plugin_admin, 'include_api_access_summary_box' );
+		$this->loader->add_action( 'admin_notices', $plugin_admin, 'include_notice_class' );
 		$this->loader->add_action( 'wp_ajax_install_and_activate_caw_free', new Mo_API_Authentication_Utils(), 'install_and_activate_caw_free' );
 		$cron_manager = new Miniorange_Api_Authentication_Cron_Manager();
 	}

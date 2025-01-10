@@ -22,13 +22,23 @@ class Mo_API_Authentication_Support {
 	 * @return void
 	 */
 	public static function mo_api_authentication_admin_support() {
+		$now         = new DateTime();
+		$expiry_date = new DateTime( '2025-02-28 23:59:59' );
 		?>
 		<div id="mo_api_authentication_support_layout" class="card text-white mo_api_authentication_support_layout p-0 text-center rounded-4 mb-2" style="background: linear-gradient(to right, #09B9CE, #3C79DA, #7039E5)">
 			<h6 class="card-header bg-transparent border-0">Unlock More Security Features</h6>
 			<div class="card-body">
-				<h5 class="card-title">Starting at  <span class="mo_api_authentication_adv_span">$199*</span></h5>
+				<h5 class="card-title">Starting at  <span class="mo_api_authentication_adv_span">
+					<?php if ( ( get_option( 'mo_api_authentication_old_plugin_version' ) && MINIORANGE_API_AUTHENTICATION_VERSION > get_option( 'mo_api_authentication_old_plugin_version' ) ) && ( $now < $expiry_date ) ) { ?>
+						<del style="font-size: 0.7em; color: rgb(255, 255, 255); text-decoration-color: red;text-decoration-thickness: 2px;">$199*</del>
+						<span style="font-size: 1.5em; color:rgb(255, 255, 255);">$29*</span></span>
+					<?php } else { ?>
+							<span>$199*</span>
+					<?php }
+					?>	
+				</h5>
 				<hr>
-				<a href="<?php echo esc_url( site_url() ); ?>/wp-admin/admin.php?page=mo_api_authentication_settings&tab=licensing" class="btn btn-sm mo_rest_api_button text-white text-capitalization">Go Premium Now</a>
+				<a href="<?php echo esc_url( site_url() ); ?>/wp-admin/admin.php?page=mo_api_authentication_settings&tab=licensing" target="_blank" class="btn btn-sm mo_rest_api_button text-white text-capitalization">Go Premium Now</a>
 			</div>
 		</div>
 		<?php

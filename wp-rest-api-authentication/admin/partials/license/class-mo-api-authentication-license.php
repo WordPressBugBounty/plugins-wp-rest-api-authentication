@@ -23,17 +23,51 @@ class Mo_API_Authentication_License {
 	 * @return void
 	 */
 	public static function mo_api_authentication_licensing_page() {
+		$now         = new DateTime();
+		$expiry_date = new DateTime( '2025-02-28 23:59:59' );
 		?>
 		<div class="container">
 			<div class="row">
-				<div class="col-md-4">
+				<?php 
+				$mo_rest_old_version = get_option( 'mo_api_authentication_old_plugin_version' );
+				if ( ( $mo_rest_old_version && MINIORANGE_API_AUTHENTICATION_VERSION > $mo_rest_old_version ) && $now < $expiry_date ) {
+					?>
+					<div class="col">
 					<div class="mo-rest-api-auth-pricing-card bg-white">
-						<div class="mo-rest-api-auth-first-card">
+						<div class="mo-rest-api-auth-first-card d-flex flex-column align-items-center mo-rest-api-special-edition-plan" style="background-image: url(<?php echo esc_url(plugin_dir_url(dirname(__DIR__)) . 'images/snowflake.jpg'); ?>);background-position: center;background-size: cover;">
+							<p class="mo-rest-api-auth-mo-rest-api-auth-customer-price-head text-center">SPECIAL EDITION</p>
+							<p class="mo-rest-api-auth-customer-price-detail text-center">(*Limited Period Offer)</p>
+							<p class="mo-rest-api-auth-customer-price mo-rest-api-auth-pricing-plan-number"><sup>$</sup><span>29</span></p>
+							<a href="https://portal.miniorange.com/initializepayment?requestOrigin=wp_rest_api_authentication_special_edition_security_plan" target="_blank"
+								class="mo-rest-api-pricing-btn">Upgrade Now</a>
+						</div>
+						<ul class="mo-rest-api-auth-ul-points">
+							<li>
+								<i class="fa fa-check-circle mo-rest-api-auth-customer-pricing-yes" style="padding-top: 24px;"></i>
+								<b>Free Plan Features +</b><br>
+								<i class="fa fa-check-circle mo-rest-api-auth-customer-pricing-yes" style="padding-top: 24px;"></i> 
+								<b>Securly Access all REST APIs</b> :
+								<ul class="mo-rest-api-auth-second-ul">
+									<li>Default WordPress REST APIs</li>
+									<li>Custom built APIs Endpoints</li>
+									<li>Third-Party Plugin APIs Endpoints</li>
+								</ul>
+							</li>
+						</ul>
+						<br><br>
+					</div>
+				</div>
+					<?php
+				}
+				?>
+				<div class="col">
+					<div class="mo-rest-api-auth-pricing-card bg-white">
+						<div class="mo-rest-api-auth-first-card d-flex flex-column align-items-center">
 							<p class="mo-rest-api-auth-mo-rest-api-auth-customer-price-head text-center">ESSENTIAL</p>
 							<p class="mo-rest-api-auth-customer-price-detail text-center">(Basic, API Key, JWT)</p>
 							<p class="mo-rest-api-auth-customer-price mo-rest-api-auth-pricing-plan-number"><sup>$</sup><span>199</span></p>
 							<a href="https://portal.miniorange.com/initializepayment?requestOrigin=wp_rest_api_authentication_essential_security_plan" target="_blank"
-								class="mo-rest-api-pricing-btn mt-5">Upgrade Now</a>
+								class="mo-rest-api-pricing-btn">Upgrade Now</a>
 						</div>
 						<ul class="mo-rest-api-auth-ul-points">
 							<li>
@@ -55,14 +89,14 @@ class Mo_API_Authentication_License {
 					</div>
 				</div>
 
-				<div class="col-md-4">
+				<div class="col">
 					<div class="mo-rest-api-auth-pricing-card bg-white">
-						<div class="mo-rest-api-auth-second-card mo-rest-api-auth-first-card">
+						<div class="mo-rest-api-auth-first-card d-flex flex-column align-items-center">
 							<p class="mo-rest-api-auth-mo-rest-api-auth-customer-price-head text-center">ADVANCED</p>
 							<p class="mo-rest-api-auth-customer-price-detail text-center">(OAuth 2.0, OAuth Token)</p>
 							<p class="mo-rest-api-auth-customer-price mo-rest-api-auth-pricing-plan-number"><sup>$</sup><span>299</span></p>
 							<a href="https://portal.miniorange.com/initializepayment?requestOrigin=wp_rest_api_authentication_advanced_security_plan" target="_blank"
-								class="mo-rest-api-pricing-btn mt-5">Upgrade Now</a>
+								class="mo-rest-api-pricing-btn">Upgrade Now</a>
 						</div>
 						<ul class="mo-rest-api-auth-ul-points">
 							<li>
@@ -89,15 +123,15 @@ class Mo_API_Authentication_License {
 					</div>
 				</div>
 
-				<div class="col-md-4">
+				<div class="col">
 					<div class="mo-rest-api-auth-pricing-card bg-white " style="border: 3px solid #eb5424;">
 						<div class="mo-rest-api-incl-plan"></div>
-						<div class="mo-rest-api-auth-first-card ">
+						<div class="mo-rest-api-auth-first-card d-flex flex-column align-items-center ">
 							<p class="mo-rest-api-auth-mo-rest-api-auth-customer-price-head text-center">ALL-INCLUSIVE</p>
 							<p class="mo-rest-api-auth-customer-price-detail text-center">(Complete API security)</p>
 							<p class="mo-rest-api-auth-customer-price mo-rest-api-auth-pricing-plan-number"><sup>$</sup><span>399</span></p>
 							<a href="https://portal.miniorange.com/initializepayment?requestOrigin=wp_rest_api_authentication_all_inclusive_security_plan" target="_blank"
-								class="mo-rest-api-pricing-btn mt-5">Upgrade Now</a>
+								class="mo-rest-api-pricing-btn">Upgrade Now</a>
 						</div>
 						<ul class="mo-rest-api-auth-ul-points">
 							<li style="padding-top: 26px;">
