@@ -1,0 +1,250 @@
+@import url(https://fonts.googleapis.com/css?family=Lato:700);
+
+.mo-rest-api-parent-div {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.mo-rest-api-box {
+    position: relative;
+    max-width: 100%;
+    width: 100%;
+    height: auto;
+    background: #fff;
+    box-shadow: 0 0 15px rgba(0, 0, 0, .1);
+    background: radial-gradient(circle, rgb(48, 53, 98), #24243e);
+}
+
+.mo-rest-api-ribbon {
+    width: 150px;
+    height: 150px;
+    overflow: hidden;
+    position: absolute;
+}
+
+.mo-rest-api-ribbon::before,
+.mo-rest-api-ribbon::after {
+    position: absolute;
+    z-index: -1;
+    content: '';
+    display: block;
+    border: 5px solid #2980b9;
+}
+
+.mo-rest-api-ribbon span {
+    position: absolute;
+    display: block;
+    width: 225px;
+    padding: 15px 0;
+    background-color: #ff0000;
+    box-shadow: 0 5px 10px rgba(0, 0, 0, .1);
+    color: #fff;
+    font: 700 16px/1 'Lato', sans-serif;
+    text-shadow: 0 1px 1px rgba(0, 0, 0, .2);
+    text-transform: uppercase;
+    text-align: center;
+}
+
+.mo-rest-api-ribbon-top-left {
+    top: -21px;
+    left: -24px;
+}
+
+.mo-rest-api-ribbon-top-left::before,
+.mo-rest-api-ribbon-top-left::after {
+    border-top-color: transparent;
+    border-left-color: transparent;
+}
+
+.mo-rest-api-ribbon-top-left::before {
+    top: 0;
+    right: 0;
+}
+
+.mo-rest-api-ribbon-top-left::after {
+    bottom: 0;
+    left: 0;
+}
+
+.mo-rest-api-ribbon-top-left span {
+    right: -25px;
+    top: 33px;
+    transform: rotate(-45deg);
+}
+
+.mo-rest-api-spcl-edition-plan-link {
+    color: #ffc972;
+    font-weight: bold;
+    text-decoration: none;
+    margin-left: 10px;
+    font-size: 0.8rem;
+    z-index: 10;
+    position: relative;
+}
+
+.mo-rest-api-spcl-edition-plan-link:focus {
+    outline: none;
+    box-shadow: none;
+}
+
+.mo-rest-api-spcl-edition-plan-link:visited {
+    color: #ffc972;
+    text-decoration: none;
+    outline: none;
+    box-shadow: none;
+}
+
+.mo-rest-api-button-primary {
+    margin-top: -5px !important;
+    margin-bottom: 0px;
+}
+
+.mo-rest-api-content-right {
+    flex: 1;
+    margin-right: 43px;
+}
+
+.mo-rest-api-special-edition-price-term {
+    font-size: 0.8rem !important;
+}
+
+.mo-rest-api-special-edition-aditional {
+    font-size: 1rem;
+}
+
+.mo-rest-api-special-edition-price {
+    font-size: 1.7rem;
+    font-weight: bold;
+}
+
+.mo_api_notice_logo {
+    width: 24px;
+    height: 24px;
+}
+
+#mo-rest-api-new-plan-notice {
+    background: radial-gradient(circle, rgb(48, 53, 98), #24243e);
+    color: #fff;
+    padding: 12px;
+    border-radius: 8px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    overflow: hidden;
+    position: relative;
+    font-family: Helvetica;
+    margin: 20px 20px 20px 0;
+}
+
+#mo-rest-api-new-plan-notice::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: url('https://www.transparenttextures.com/patterns/stardust.png');
+    opacity: 0.1;
+    z-index: 1;
+}
+
+.mo-rest-api-notice-content {
+    width: 100%;
+    z-index: 2;
+    font-family: Helvetica;
+}
+
+#mo-rest-api-new-plan-notice .mo-rest-api-content-right h2 {
+    font-size: 1.1rem;
+    margin-bottom: -15px !important;
+    color: #e0e0e0;
+    font-family: Helvetica;
+    margin-top: 0px;
+}
+
+#mo-rest-api-new-plan-notice p {
+    margin-bottom: 0px;
+    margin-top: 14px;
+    font-size: 1.4rem;
+    color: rgb(220, 225, 220);
+    font-family: Helvetica;
+}
+
+.mo-rest-api-countdown-container {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    margin-right: 10px;
+}
+
+.mo-rest-api-countdown-item {
+    text-align: center;
+}
+
+.mo-rest-api-days-left-label {
+    font-size: 0.9rem;
+    margin-top: 5px;
+    color: #b8b9d4;
+    font-family: Helvetica;
+}
+
+.mo-rest-api-flip-unit {
+    position: relative;
+    perspective: 1000px;
+}
+
+.mo-rest-api-flip-card {
+    position: relative;
+    line-height: 80px;
+    text-align: center;
+    font-size: 2rem;
+    font-weight: bold;
+    color: #fff;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0.5));
+    border-radius: 16px;
+    backdrop-filter: blur(15px);
+    -webkit-backdrop-filter: blur(15px);
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.2);
+    padding: 15px 20px;
+    overflow: hidden;
+    transform-style: preserve-3d;
+    transition: transform 1s ease-in-out;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-sizing: border-box;
+}
+
+.mo-rest-api-flip-front,
+.mo-rest-api-flip-back {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    backface-visibility: hidden;
+    font-size: 18px;
+    font-weight: bold;
+
+    line-height: 54px;
+    text-align: center;
+}
+
+.mo-rest-api-flip-front {
+    z-index: 2;
+}
+
+.mo-rest-api-flip-back {
+    transform: rotateX(-180deg);
+}
+
+.mo-rest-api-flip-card.mo-rest-api-flipping {
+    transform: rotateX(-180deg);
+}
+
+.mo-rest-api-days-left-label-colon{
+    position: relative;
+    top: -10px;
+    font: 900 36px;
+}
