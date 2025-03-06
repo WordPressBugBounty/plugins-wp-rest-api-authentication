@@ -24,7 +24,7 @@ class Mo_API_Authentication_License {
 	 */
 	public static function mo_api_authentication_licensing_page() {
 		$now         = new DateTime();
-		$expiry_date = new DateTime( '2025-02-28 23:59:59' );
+		$expiry_date = new DateTime( '2025-03-31 23:59:59' );
 		?>
 		<div class="container">
 			<div class="row">

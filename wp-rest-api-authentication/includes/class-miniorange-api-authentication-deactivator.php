@@ -35,6 +35,5 @@ class Miniorange_Api_Authentication_Deactivator {
 		delete_option( 'mo_api_authentication_customer_token' );
 		delete_option( 'mo_api_auth_message' );
 		delete_option( 'mo_api_authentication_registration_status' );
-		delete_option( 'mo_api_authentication_current_plugin_version' );
 	}
 }

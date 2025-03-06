@@ -42,3 +42,4 @@ if ( ! defined( 'WP_UNINSTALL_PLUGIN' ) ) {
 
 delete_option( 'mo_api_authentication_protectedrestapi_route_whitelist' );
 delete_option( 'mo_api_authentication_init_protected_apis' );
+delete_option( 'mo_api_authentication_current_plugin_version' );

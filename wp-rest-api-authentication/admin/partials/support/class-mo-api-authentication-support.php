@@ -23,7 +23,7 @@ class Mo_API_Authentication_Support {
 	 */
 	public static function mo_api_authentication_admin_support() {
 		$now         = new DateTime();
-		$expiry_date = new DateTime( '2025-02-28 23:59:59' );
+		$expiry_date = new DateTime( '2025-03-31 23:59:59' );
 		?>
 		<div id="mo_api_authentication_support_layout" class="card text-white mo_api_authentication_support_layout p-0 text-center rounded-4 mb-2" style="background: linear-gradient(to right, #09B9CE, #3C79DA, #7039E5)">
 			<h6 class="card-header bg-transparent border-0">Unlock More Security Features</h6>
