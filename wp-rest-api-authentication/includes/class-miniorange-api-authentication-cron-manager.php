@@ -43,16 +43,9 @@ class Miniorange_Api_Authentication_Cron_Manager {
 	public function daily_cron_function() {
 		$summary_box_close_time = get_option( 'mo_api_auth_summary_box_close_time', 0 );
 
-		if ( Mo_API_Authentication_Notices_Utils::if_notice_time_remaining( $summary_box_close_time, 7, DAY_IN_SECONDS ) ) {
+		if ( ! Mo_API_Authentication_Notices_Utils::if_notice_time_remaining( $summary_box_close_time, 7, DAY_IN_SECONDS ) ) {
 			// 7 days have passed, reset the option to show the summary box again
 			delete_option( 'mo_api_auth_summary_box_close_time' );
-		}
-
-		$special_plan_notice_close_time = get_option( 'mo_api_auth_special_plan_notice_close_time', 0 );
-
-		if ( Mo_API_Authentication_Notices_Utils::if_notice_time_remaining( $special_plan_notice_close_time, 1, DAY_IN_SECONDS ) ) {
-			// 1 days have passed, reset the option to show the summary box again
-			delete_option( 'mo_api_auth_special_plan_notice_close_time' );
 		}
 	}
 }

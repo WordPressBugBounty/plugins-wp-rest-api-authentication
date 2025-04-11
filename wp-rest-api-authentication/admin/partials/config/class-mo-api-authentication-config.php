@@ -197,6 +197,7 @@ class Mo_API_Authentication_Config {
 					document.getElementsByClassName(classname)[0].style.display = "none";
 				}
 			}
+
 		</script>
 		<?php
 	}

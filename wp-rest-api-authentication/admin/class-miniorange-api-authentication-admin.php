@@ -463,18 +463,13 @@ class Miniorange_API_Authentication_Admin {
 	 * @return void
 	 */
 	public static function include_notice_class() {
-		
+
 		if( ! current_user_can( 'manage_options' ) ) {
 			return;
 		}
 
-		include_once plugin_dir_path( __FILE__ ) . 'partials' . DIRECTORY_SEPARATOR . 'notices' . DIRECTORY_SEPARATOR . 'admin-notices' . DIRECTORY_SEPARATOR . 'class-mo-api-authentication-admin-notices.php';
-		wp_enqueue_style( 'mo_api_authentication_special_edition_plan_style', plugin_dir_url( __DIR__ ) . '/css/special-plan.min.css', MINIORANGE_API_AUTHENTICATION_VERSION, array(), false, false );
-		$mo_rest_old_version = get_option( 'mo_api_authentication_old_plugin_version' );
+		include_once plugin_dir_path( __FILE__ ) . 'partials/notices/admin-notices/class-mo-api-authentication-admin-notices.php';
 
-		if ( $mo_rest_old_version && MINIORANGE_API_AUTHENTICATION_VERSION >= $mo_rest_old_version ) {
-			Mo_API_Authentication_Admin_Notices::display_special_edition_plan_notice();
-		}
 		Mo_API_Authentication_Admin_Notices::display_summary_box();
 	}
 

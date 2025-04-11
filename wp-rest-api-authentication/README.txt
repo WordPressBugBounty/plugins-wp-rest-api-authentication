@@ -3,7 +3,7 @@ Contributors: miniOrange
 Tags: api, rest-api, jwt auth, jwt, basic auth, REST, secure api, token, endpoints, json web token, oauth, api key auth
 Requires at least: 3.0.1
 Tested up to: 6.7
-Stable tag: 3.6.3
+Stable tag: 3.6.4
 Requires PHP: 5.6
 License: MIT/Expat
 License URI: https://docs.miniorange.com/mit-license
@@ -174,6 +174,9 @@ This plugin does not store any user data.
 8. API Access Auditing analytics
 
 == Changelog ==
+
+= 3.6.4 =
+* Bug fixes
 
 = 3.6.3 =
 * UI improvements related to the REST API Access analytics show in the dashboard
