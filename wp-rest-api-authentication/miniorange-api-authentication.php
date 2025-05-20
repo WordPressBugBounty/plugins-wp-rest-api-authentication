@@ -9,13 +9,13 @@
 
 /**
  * Plugin Name:       WordPress REST API Authentication
- * Plugin URI:        wp-rest-api-authentication
+ * Plugin URI:        https://wordpress.org/plugins/wp-rest-api-authentication
  * Description:       WordPress REST API Authentication secures rest API access for unauthorized users using OAuth 2.0, Basic Auth, JWT, API Key. Also reduces potential attack factors to the respective site.
- * Version:           3.6.4
+ * Version:           3.6.5
  * Author:            miniOrange
  * Author URI:        https://www.miniorange.com
- * License:           MIT/Expat
- * License URI:       https://docs.miniorange.com/mit-license
+ * License:           Expat
+ * License URI:       https://plugins.miniorange.com/mit-license
  */
 
 

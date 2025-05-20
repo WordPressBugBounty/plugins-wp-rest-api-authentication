@@ -55,7 +55,7 @@ class Mo_API_Authentication_Feedback {
 						<p><strong>Please read this before deactivating the plugin:</strong></p>
 						<ul>
 							<li>Deactivating this plugin will leave your site's APIs unprotected, potentially exposing sensitive data and compromising your site's security.</li>
-							<li>Since the plugin was activated, <b id="total_protected_apis"><?php echo $total_apis; ?></b> REST APIs access have been protected.</li>
+							<li>Since the plugin was activated, <b id="total_protected_apis"><?php echo esc_html( $total_apis ); ?></b> REST APIs access have been protected.</li>
 							<li>For more detailed information on security report, please <a href="admin.php?page=mo_api_authentication_settings&tab=auditing" id="mo-api_auth-more_details_link">click here</a>.</li>
 						</ul>
 					</div>

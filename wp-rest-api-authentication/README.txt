@@ -2,11 +2,11 @@
 Contributors: miniOrange
 Tags: api, rest-api, jwt auth, jwt, basic auth, REST, secure api, token, endpoints, json web token, oauth, api key auth
 Requires at least: 3.0.1
-Tested up to: 6.7
-Stable tag: 3.6.4
+Tested up to: 6.8
+Stable tag: 3.6.5
 Requires PHP: 5.6
-License: MIT/Expat
-License URI: https://docs.miniorange.com/mit-license
+License: Expat
+License URI: https://plugins.miniorange.com/mit-license
 
 Secure and protect your WP REST API endpoints from unauthorized access. Authenticate  WordPress API using secure authentication methods. 
 
@@ -174,6 +174,10 @@ This plugin does not store any user data.
 8. API Access Auditing analytics
 
 == Changelog ==
+
+= 3.6.5 =
+* Compatibility with WordPress 6.8
+* URL migration
 
 = 3.6.4 =
 * Bug fixes

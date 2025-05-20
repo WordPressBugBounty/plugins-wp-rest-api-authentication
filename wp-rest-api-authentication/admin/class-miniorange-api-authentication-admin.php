@@ -191,7 +191,7 @@ class Miniorange_API_Authentication_Admin {
 	 */
 	public function mo_api_auth_admin_menu() {
 
-		add_menu_page( 'API Authentication Settings ' . __( 'Configure Authentication', 'mo_api_authentication_settings' ), 'miniOrange API Authentication', 'manage_options', 'mo_api_authentication_settings', array( $this, 'mo_api_auth_menu_options' ), plugin_dir_url( __FILE__ ) . 'images/miniorange.png' );
+		add_menu_page( 'API Authentication Settings ' . __( 'Configure Authentication', 'wp-rest-api-authentication' ), 'miniOrange API Authentication', 'manage_options', 'mo_api_authentication_settings', array( $this, 'mo_api_auth_menu_options' ), plugin_dir_url( __FILE__ ) . 'images/miniorange.png' );
 	}
 
 	/**
