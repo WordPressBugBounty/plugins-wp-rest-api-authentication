@@ -38,15 +38,8 @@ class Mo_API_Authentication_Config {
 			<div id="mo_api_authentication_password_setting_layout" class="border border-1 rounded-4 p-3 bg-white">
 				<div class="d-flex align-items-center gap-3 mb-3 justify-content-between">
 					<h5 class="m-0">API Authentication Methods Configuration</h5>
-					<?php if ( get_option( 'mo_api_authentication_selected_authentication_method' ) ) : ?>
-						<button class="btn btn-sm mo_rest_api_button text-white" aria-disabled="true" disabled><i class="fa fa-plus"></i> Add Application</button>
-					<?php endif; ?>
 				</div>
-				<?php if ( get_option( 'mo_api_authentication_selected_authentication_method' ) ) : ?>
-					<div id="mo_api_auth_add_app_message">
-						<p class="mo_api_auth_note"><strong><i>Note: </i></strong>You can only configure one authentication method at a time with the free version. Please <strong><a href="admin.php?page=mo_api_authentication_settings&tab=licensing">Upgrade to All-Inclusive Plan Package</a></strong> to configure multiple authentication applications.</p>
-					</div>
-				<?php else : ?>
+				<?php if ( ! get_option( 'mo_api_authentication_selected_authentication_method' ) ) : ?>
 					<p>Select any of the below authentication methods to get started</p>
 				<?php endif; ?>
 				<div class="row px-3 gap-2 mb-3">

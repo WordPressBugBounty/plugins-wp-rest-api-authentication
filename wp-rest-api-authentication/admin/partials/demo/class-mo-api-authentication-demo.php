@@ -224,7 +224,7 @@ class Mo_API_Authentication_Demo {
 						</div>
 					</div>
 				</div>
-				<p class="text-muted"><b>Note: </b>You will receive the email shortly with the demo details once you successfully make the demo/trial request. If not received, please check out your spam folder or contact us at <a href="mailto:apisupport@xecurify.com?subject=WP REST API Authentication Plugin - Enquiry">apisupport@xecurify.com</a>.</p>
+				<p class="text-muted"><b>Note: </b>You will receive the email shortly with the demo details once you successfully make the demo/trial request. If not received, please check out your spam folder or contact us at <a href="mailto:apisupport@xecurify.com?subject=REST API Authentication for WP Plugin - Enquiry">apisupport@xecurify.com</a>.</p>
 				<div class="text-center">
 					<button id="mo_rest_api_auth_sandbox_btn" type="submit" class="btn btn-sm mo_rest_api_button text-capitalization text-white">Submit Request</button>
 				</div>

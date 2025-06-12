@@ -218,7 +218,7 @@ class Mo_API_Authentication_Support {
 				var fname = "<?php echo esc_attr( ( wp_get_current_user()->user_firstname ) ); ?>";
 				var lname = "<?php echo esc_attr( ( wp_get_current_user()->user_lastname ) ); ?>";
 				var version = "<?php echo esc_attr( MINIORANGE_API_AUTHENTICATION_VERSION ); ?>";
-				var query = "[WordPress REST API Authentication plugin] "+version+" - "+query;
+				var query = "[REST API Authentication for WP plugin] "+version+" - "+query;
 				var pattern = /^\b[A-Z0-9._%-]+@[A-Z0-9.-]+\.[A-Z]{2,4}\b$/i;
 				if(email == "" || query == "" || !pattern.test(email)){
 

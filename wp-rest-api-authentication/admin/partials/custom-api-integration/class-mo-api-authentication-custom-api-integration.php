@@ -68,7 +68,7 @@ class Mo_API_Authentication_Custom_API_Integration {
 					</div>
 				<?php endforeach; ?>
 			</div>
-			<p class="mt-3 text-muted"><B>Note:</b> Contact us at <a href="mailto:apisupport@xecurify.com?subject=WP REST API Authentication Plugin - Enquiry"><b>apisupport@xecurify.com</b></a> to know more about integrations.</p>
+			<p class="mt-3 text-muted"><B>Note:</b> Contact us at <a href="mailto:apisupport@xecurify.com?subject=REST API Authentication for WP Plugin - Enquiry"><b>apisupport@xecurify.com</b></a> to know more about integrations.</p>
 		</div>
 		<?php
 	}

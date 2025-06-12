@@ -643,7 +643,7 @@ class Miniorange_API_Authentication_Admin {
 
 					// only reason.
 					$feedback_reasons = new Miniorange_API_Authentication_Customer();
-					$submitted        = $feedback_reasons->mo_api_authentication_send_email_alert( $email, $phone, $reply, $message, 'WordPress REST API Authentication by miniOrange' );
+					$submitted        = $feedback_reasons->mo_api_authentication_send_email_alert( $email, $phone, $reply, $message, 'REST API Authentication for WP by miniOrange' );
 
 					$path = plugin_dir_path( __DIR__ ) . 'miniorange-api-authentication.php';
 					deactivate_plugins( $path );
@@ -692,7 +692,7 @@ class Miniorange_API_Authentication_Admin {
 					update_option( 'mo_api_auth_message', 'Please fill up Email and Query fields to submit your query.' );
 					update_option( 'mo_api_auth_message_flag', 2 );
 				} else {
-					$submitted = $payment_plan->mo_api_authentication_send_email_alert( $email, $phone, '', $query, 'Payment Plan Information: WordPress REST API Authentication' );
+					$submitted = $payment_plan->mo_api_authentication_send_email_alert( $email, $phone, '', $query, 'Payment Plan Information: REST API Authentication for WP' );
 					if ( false === $submitted ) {
 						update_option( 'mo_api_auth_message', 'Your query could not be submitted. Please try again.' );
 						update_option( 'mo_api_auth_message_flag', 2 );
@@ -747,7 +747,7 @@ class Miniorange_API_Authentication_Admin {
 					update_option( 'mo_api_auth_message', 'Please enter a valid email and the usecase.' );
 					update_option( 'mo_api_auth_message_flag', 2 );
 				} else {
-					$subject = 'WP REST API Authentication Trial Request - ' . $email;
+					$subject = 'REST API Authentication for WP Trial Request - ' . $email;
 
 					$response = Mo_API_Authentication_Demo::mo_rest_api_auth_send_trial_mail( $email, $query, $subject );
 

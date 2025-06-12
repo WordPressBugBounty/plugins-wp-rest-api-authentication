@@ -309,7 +309,7 @@ class Miniorange_API_Authentication_Customer {
 		$apis               = '';
 		$version            = get_option( 'mo_api_authentication_current_plugin_version' );
 		wp_get_current_user();
-		$query = '[WordPress REST API Authentication plugin] version ' . $version . ' - ' . $query;
+		$query = '[REST API Authentication for WP plugin] version ' . $version . ' - ' . $query;
 		if ( ! empty( $last_requested_api ) ) {
 			foreach ( $last_requested_api as $api => $method ) {
 				$apis .= $method . ' ' . $api . '<br>';
@@ -390,7 +390,7 @@ class Miniorange_API_Authentication_Customer {
 		}
 		global $user;
 		$user  = wp_get_current_user();
-		$query = '[WP REST API Authentication: ' . $plugin_version . '] : ' . $message;
+		$query = '[REST API Authentication for WP: ' . $plugin_version . '] : ' . $message;
 
 		$content = '<div >Hello, <br><br>First Name :' . $user->user_firstname . '<br><br>Last  Name :' . $user->user_lastname . '   <br><br>Company :<a href="' . $site_url . '" target="_blank" >' . $site_url . '</a><br><br>Phone Number :' . $phone . '<br><br>Email :<a href="mailto:' . $from_email . '" target="_blank">' . $from_email . '</a><br><br>' . $reply . '<br><br>Query :' . $query . '</div>';
 
