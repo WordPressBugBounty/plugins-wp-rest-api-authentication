@@ -44,7 +44,7 @@ class Mo_API_Authentication_Custom_API_Integration {
 			'Contact Form 7'      => 'contact-form-7.png',
 			'Formidable Forms'    => 'formidable-forms.png',
 			'Learndash'           => 'learndash.png',
-			'CoCart'              => 'cocart-icon.png',
+			'CoCart'              => 'cocart.jpg',
 			'Custom REST APIs'    => 'api.png',
 		);
 		?>

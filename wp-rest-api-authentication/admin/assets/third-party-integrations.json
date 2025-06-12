@@ -42,7 +42,7 @@
     "Co Cart": {
       "file": "cart-rest-api-for-woocommerce/cart-rest-api-for-woocommerce.php",
       "namespace": "cocart",
-      "image": "cocart-icon.png"
+      "image": "cocart.jpg"
     },
     "miniOrange Custom API Plugin": {
       "file": "custom-api-for-wp/custom-api-for-wordpress.php",
