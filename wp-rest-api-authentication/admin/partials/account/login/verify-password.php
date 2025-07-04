@@ -50,8 +50,20 @@ function mo_api_authentication_verify_password_ui() {
 										</div>
 									</div>
 								</div>
+								<div class="mb-3 col">
+									<div class="row">
+										<div class="col-3 text-start">
+										</div>
+										<div class="col">
+											<input type="checkbox" class="form-check-input" id="mo_rest_api_terms_privacy_checkbox" name="mo_rest_api_terms_privacy_checkbox" required>
+											<label class="form-check-label mo_rest_api_primary_font mb-0 ms-*" for="mo_rest_api_terms_privacy_checkbox" style="font-size: 0.7rem;">
+												I have read and agree to the <a href="https://plugins.miniorange.com/end-user-license-agreement" target="_blank">end user agreement</a> and <a href="https://plugins.miniorange.com/wp-content/uploads/2023/08/Plugins-Privacy-Policy.pdf" target="_blank">plugin privacy policy</a>
+											</label>
+										</div>
+									</div>
+								</div>
 							</div>
-							<div class="text-end mb-3">
+							<div class="mb-3 col text-center">
 								<a class="mo_rest_api_primary_font" href="#mo_api_authentication_forgot_password_link">Click here if you forgot your password?</a>
 							</div>
 							<div class="d-grid gap-2 d-md-block text-center">

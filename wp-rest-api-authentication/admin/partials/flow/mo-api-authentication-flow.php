@@ -19,7 +19,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  * @return void
  */
 function mo_api_authentication_config_app_settings() {
-	if ( ! empty( $_SERVER['REQUEST_METHOD'] ) && sanitize_text_field( wp_unslash( $_SERVER['REQUEST_METHOD'] ) ) === 'POST' && current_user_can( 'administrator' ) ) {
+	if ( ! empty( $_SERVER['REQUEST_METHOD'] ) && sanitize_text_field( wp_unslash( $_SERVER['REQUEST_METHOD'] ) ) === 'POST' && current_user_can( 'manage_options' ) ) {
 
 		if ( ( isset( $_POST['option'] ) && sanitize_text_field( wp_unslash( $_POST['option'] ) ) === 'mo_api_basic_authentication_config_form' ) && isset( $_REQUEST['mo_api_basic_authentication_method_config_fields'] ) && wp_verify_nonce( sanitize_text_field( wp_unslash( $_REQUEST['mo_api_basic_authentication_method_config_fields'] ) ), 'mo_api_basic_authentication_method_config' ) ) {
 			update_option( 'mo_api_authentication_selected_authentication_method', 'basic_auth' );

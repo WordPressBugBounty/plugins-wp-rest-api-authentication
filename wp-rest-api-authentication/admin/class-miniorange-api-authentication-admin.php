@@ -353,9 +353,17 @@ class Miniorange_API_Authentication_Admin {
 	 * @return mixed
 	 */
 	public function mo_api_auth_initialize_api_flow() {
-		if ( isset( $_SERVER['REQUEST_METHOD'] ) && 'OPTIONS' === $_SERVER['REQUEST_METHOD'] ) {
+		if ( isset( $_SERVER['REQUEST_METHOD'] ) && 'OPTIONS' === $_SERVER['REQUEST_METHOD'] && isset( $_SERVER['HTTP_ACCESS_CONTROL_REQUEST_METHOD'] ) ) {
 			// The Open API success request counter is increasing.
 			Mo_API_Authentication_Utils::increment_success_counter( Mo_API_Authentication_Constants::OPEN_API );
+			$origin = isset( $_SERVER['HTTP_ORIGIN'] ) ? esc_url_raw( wp_unslash( $_SERVER['HTTP_ORIGIN'] ) ) : '';
+			if ( ! empty( $origin ) ) {
+				header( 'Access-Control-Allow-Origin: ' . $origin );
+				header( 'Access-Control-Allow-Credentials: true' );
+				header( 'Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS' );
+				header( 'Access-Control-Allow-Headers: Authorization, Content-Type, X-WP-Nonce' );
+				header( 'Access-Control-Max-Age: 86400' );
+			}
 			$response = array(
 				'code'    => '200',
 				'status'  => 'success',
@@ -615,7 +623,7 @@ class Miniorange_API_Authentication_Admin {
 					$deactivate_reason = sanitize_text_field( wp_unslash( $_POST['deactivate_reason_select'] ) );
 				}
 
-				$deactivate_reason_message = array_key_exists( 'query_feedback', $_POST ) ? sanitize_text_field( wp_unslash( $_POST['query_feedback'] ) ) : false;
+				$deactivate_reason_message = array_key_exists( 'mo_api_auth_query_feedback', $_POST ) ? sanitize_text_field( wp_unslash( $_POST['mo_api_auth_query_feedback'] ) ) : false;
 
 				if ( $deactivate_reason ) {
 					$message .= $deactivate_reason;

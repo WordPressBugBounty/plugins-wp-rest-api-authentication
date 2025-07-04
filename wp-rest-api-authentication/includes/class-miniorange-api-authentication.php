@@ -69,8 +69,8 @@ class Miniorange_Api_Authentication {
 			$this->version = '1.3.4';
 		}
 		$mo_rest_old_version = get_option( 'mo_api_authentication_current_plugin_version' );
-		if ( $mo_rest_old_version && '1.6.0' !== $mo_rest_old_version && '1.6.1' !== $mo_rest_old_version ) {
-			update_option( 'mo_rest_api_protect_migrate', 1 );
+		if ( $mo_rest_old_version && '1.6.0' !== $mo_rest_old_version && '1.6.1' !== $mo_rest_old_version && '1' !== get_option( 'mo_rest_api_protect_migrate' ) ) {
+			update_option( 'mo_rest_api_protect_migrate', '1' );
 		}
 
 		$this->load_dependencies();
@@ -80,7 +80,9 @@ class Miniorange_Api_Authentication {
 		if ( $mo_rest_old_version < MINIORANGE_API_AUTHENTICATION_VERSION ) {
 			update_option( 'mo_api_authentication_old_plugin_version', $mo_rest_old_version );
 		}
-		update_option( 'mo_api_authentication_current_plugin_version', $this->version );
+		if ( $this->version !== get_option( 'mo_api_authentication_current_plugin_version' ) ) {
+			update_option( 'mo_api_authentication_current_plugin_version', $this->version );
+		}
 	}
 
 	/**

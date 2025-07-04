@@ -24,9 +24,9 @@ class Mo_API_Authentication_TokenAPI_Config {
 		$mo_api_key_enable = ( get_option( 'mo_api_authentication_selected_authentication_method' ) === 'tokenapi' ) ? 1 : 0;
 		?>
 		<div id="mo_api_key_authentication_support_layout" class="border border-1 rounded-4 p-3">
-			<form method="post" id="mo-api-key-authentication-method-form">
+			<form method="post" id="mo-api-key-authentication-method-form_step1">
 				<input type="hidden" name="action" id="mo_api_apikeyauth_save_config_input" value="Save APIKey Auth">
-				<?php wp_nonce_field( 'mo_api_key_authentication_method_config', 'mo_api_key_authentication_method_config_fields' ); ?>
+				<?php wp_nonce_field( 'mo_api_key_authentication_method_config', 'mo_api_key_authentication_method_config_fields_step1' ); ?>
 				<div class="d-flex align-items-center gap-3 mb-3 justify-content-between">
 					<div class="d-flex align-items-center gap-3 mb-3">
 						<h5 class="m-0">

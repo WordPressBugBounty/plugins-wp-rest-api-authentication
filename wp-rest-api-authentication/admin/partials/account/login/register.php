@@ -66,6 +66,17 @@ function mo_api_authentication_register_ui() {
 									</div>
 								</div>
 							</div>
+							<div class="mb-3 col">
+								<div class="row">
+									<div class="col-3 text-start">
+									</div>
+									<div class="col d-flex align-items-center"><input type="checkbox" class="form-check-input mt-0" id="mo_rest_api_terms_privacy_checkbox" name="mo_rest_api_terms_privacy_checkbox" required>
+									<label class="form-check-label mo_rest_api_primary_font mb-0 ms-2" for="mo_rest_api_terms_privacy_checkbox" style="font-size: 0.7rem;">
+										I have read and agree to the <a href="https://plugins.miniorange.com/end-user-license-agreement" target="_blank">end user agreement</a> and <a href="https://plugins.miniorange.com/wp-content/uploads/2023/08/Plugins-Privacy-Policy.pdf" target="_blank">plugin privacy policy</a>
+									</label>
+									</div>
+								</div>
+							</div>
 						</div>
 						<div class="d-grid gap-2 d-md-block text-center">
 							<button class="btn btn-sm mo_rest_api_button text-white text-capitalize" type="button" name="mo_api_authentication_goto_login" id="mo_api_authentication_goto_login">Already have an account?</button>
