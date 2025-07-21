@@ -26,9 +26,9 @@ class Mo_API_Authentication_Support {
 		<div id="mo_api_authentication_support_layout" class="card text-white mo_api_authentication_support_layout p-0 text-center rounded-4 mb-2" style="background: linear-gradient(to right, #09B9CE, #3C79DA, #7039E5)">
 			<h6 class="card-header bg-transparent border-0">Unlock More Security Features</h6>
 			<div class="card-body">
-				<h5 class="card-title">Starting at  <span class="mo_api_authentication_adv_span">$199*</span></h5>
+				<h5 class="card-title">Starting at  <span class="mo_api_authentication_adv_span">$299*</span></h5>
 				<hr>
-				<a href="<?php echo esc_url( site_url() ); ?>/wp-admin/admin.php?page=mo_api_authentication_settings&tab=licensing" target="_blank" class="btn btn-sm mo_rest_api_button text-white text-capitalization">Go Premium Now</a>
+				<a href="https://plugins.miniorange.com/wordpress-rest-api-authentication#Pricingplan" target="_blank" class="btn btn-sm mo_rest_api_button text-white text-capitalization">Go Premium Now</a>
 			</div>
 		</div>
 		<?php

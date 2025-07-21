@@ -17,7 +17,6 @@ if ( ! defined( 'ABSPATH' ) ) {
 require 'support' . DIRECTORY_SEPARATOR . 'class-mo-api-authentication-support.php';
 require 'support'. DIRECTORY_SEPARATOR . 'class-mo-api-authentication-faq.php';
 require 'config'. DIRECTORY_SEPARATOR . 'class-mo-api-authentication-config.php';
-require 'license'. DIRECTORY_SEPARATOR . 'class-mo-api-authentication-license.php';
 require 'account'. DIRECTORY_SEPARATOR . 'class-mo-api-authentication-account.php';
 require 'demo'. DIRECTORY_SEPARATOR . 'class-mo-api-authentication-demo.php';
 require 'postman'. DIRECTORY_SEPARATOR . 'class-mo-api-authentication-postman.php';
@@ -194,8 +193,6 @@ class Mo_API_Authentication_Admin_Menu {
 			Mo_API_Authentication_Demo::mo_api_authentication_requestfordemo();
 		} elseif ( 'faq' === $currenttab ) {
 			Mo_API_Authentication_FAQ::mo_api_authentication_admin_faq();
-		} elseif ( 'licensing' === $currenttab ) {
-			Mo_API_Authentication_License::mo_api_authentication_licensing_page();
 		} elseif ( 'postman' === $currenttab ) {
 			Mo_API_Authentication_Postman::mo_api_authentication_postman_page();
 		} elseif ( 'auditing' === $currenttab ) {
