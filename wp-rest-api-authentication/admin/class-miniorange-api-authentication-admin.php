@@ -200,6 +200,8 @@ class Miniorange_API_Authentication_Admin {
 	 * @return void
 	 */
 	public function mo_api_auth_menu_options() {
+		wp_enqueue_script( 'mo_api_authentication_adv_button_script',plugins_url( 'js/advertisementButton.js', __FILE__ ), MINIORANGE_API_AUTHENTICATION_VERSION, array(), true);
+		wp_localize_script('mo_api_authentication_adv_button_script','moRestData',array('ajax_url' => admin_url('admin-ajax.php'),'nonce_wcps' => wp_create_nonce('mo_rest_api_install_and_activate_wcps_free'),'nonce_caw' => wp_create_nonce('mo_rest_api_install_and_activate_caw_free')));
 		mo_api_authentication_is_customer_registered();
 		mo_api_authentication_main_menu();
 	}

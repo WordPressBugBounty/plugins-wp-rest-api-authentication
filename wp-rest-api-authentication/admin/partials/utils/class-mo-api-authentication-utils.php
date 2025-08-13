@@ -103,6 +103,65 @@ class Mo_API_Authentication_Utils {
 		wp_send_json_error( $response, $response['code'] );
 	}
 
+
+	public function install_and_activate_wcps_free() {
+		$response = array();
+		if ( ! empty( $_SERVER['REQUEST_METHOD'] ) && ! empty( $_POST['nonce'] ) && sanitize_text_field( wp_unslash( $_SERVER['REQUEST_METHOD'] ) ) === 'POST' && current_user_can( 'manage_options' ) && wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['nonce'] ) ), 'mo_rest_api_install_and_activate_wcps_free' ) ) {
+			$plugin_name   = 'products-sync-for-woocommerce';
+			$download_link = $this->get_plugin_download_link_from_wp_org( $plugin_name );
+			if ( $download_link ) {
+				$plugin_path = WP_PLUGIN_DIR . DIRECTORY_SEPARATOR . $plugin_name . '/products-sync-for-woocommerce.php';
+
+				// Check to see if plugin is already exists.
+				if ( ! file_exists( $plugin_path ) ) {
+					$temp_file = download_url( $download_link );
+
+					error_log( 'Download URL: ' . $download_link );
+					error_log( 'Temporary file path: ' . $temp_file );
+
+					if ( ! is_wp_error( $temp_file ) ) {
+						$zip = new ZipArchive();
+						$res = $zip->open( $temp_file );
+						if ( true === $res ) {
+							$extract_result = $zip->extractTo( WP_PLUGIN_DIR );
+							$zip->close();
+
+							if ( true === $extract_result ) {
+								wp_delete_file( $temp_file );
+							}
+						}
+					}
+				}
+			}
+
+			// Check to see if plugin is already active.
+			if ( ! is_plugin_active( $plugin_name . '/products-sync-for-woocommerce.php' ) ) {
+				$result = activate_plugin( $plugin_path );
+				if ( ! is_wp_error( $result ) ) {
+					$response = array(
+						'message'      => 'Plugin activated successfully.',
+						'redirect_url' => admin_url( 'admin.php?page=sync-to-woocommerce' ),
+					);
+				}
+			} else {
+				$response = array(
+					'message'      => 'Plugin already activated.',
+					'redirect_url' => admin_url( 'admin.php?page=sync-to-woocommerce' ),
+				);
+			}
+		}
+		if ( $response ) {
+			wp_send_json_success( $response );
+		}
+
+		$response = array(
+			'message' => 'Invalid request check.',
+			'code'    => 400,
+		);
+
+		wp_send_json_error( $response, $response['code'] );
+	}
+
 	/**
 	 * Retrieves content of a file.
 	 *

@@ -181,6 +181,7 @@ class Miniorange_Api_Authentication {
 		$this->loader->add_action( 'wp_ajax_save_temporary_data', $plugin_admin, 'save_temporary_data' );
 		$this->loader->add_action( 'admin_notices', $plugin_admin, 'include_notice_class' );
 		$this->loader->add_action( 'wp_ajax_install_and_activate_caw_free', new Mo_API_Authentication_Utils(), 'install_and_activate_caw_free' );
+		$this->loader->add_action( 'wp_ajax_install_and_activate_wcps_free', new Mo_API_Authentication_Utils(), 'install_and_activate_wcps_free' );
 		$cron_manager = new Miniorange_Api_Authentication_Cron_Manager();
 	}
 
