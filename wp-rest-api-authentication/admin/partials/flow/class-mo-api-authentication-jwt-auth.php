@@ -43,6 +43,8 @@ class Mo_API_Authentication_JWT_Auth {
 					if ( Mo_API_Authentication_Utils::is_auditable_api_request( '/api/v1/token-validate' ) ) {
 						Mo_API_Authentication_Utils::increment_blocked_counter( Mo_API_Authentication_Constants::INVALID_CREDENTIALS );
 					}
+					// Increment rate limit counter for invalid JWT format.
+					mo_api_auth_increment_rate_limit();
 					$response = array(
 						'status'            => 'error',
 						'error'             => 'SEGMENT_FAULT',
@@ -56,6 +58,8 @@ class Mo_API_Authentication_JWT_Auth {
 				if ( Mo_API_Authentication_Utils::is_auditable_api_request( '/api/v1/token-validate' ) ) {
 					Mo_API_Authentication_Utils::increment_blocked_counter( Mo_API_Authentication_Constants::INVALID_CREDENTIALS );
 				}
+				// Increment rate limit counter for invalid authorization header.
+				mo_api_auth_increment_rate_limit();
 				$response = array(
 					'status'            => 'error',
 					'error'             => 'INVALID_AUTHORIZATION_HEADER_TOKEN_TYPE',
@@ -69,6 +73,8 @@ class Mo_API_Authentication_JWT_Auth {
 		if ( Mo_API_Authentication_Utils::is_auditable_api_request( '/api/v1/token-validate' ) ) {
 			Mo_API_Authentication_Utils::increment_blocked_counter( Mo_API_Authentication_Constants::MISSING_AUTHORIZATION_HEADER );
 		}
+		// Increment rate limit counter for missing authorization header.
+		mo_api_auth_increment_rate_limit();
 		$response = array(
 			'status'            => 'error',
 			'error'             => 'MISSING_AUTHORIZATION_HEADER',
@@ -137,6 +143,8 @@ class Mo_API_Authentication_JWT_Auth {
 				if ( Mo_API_Authentication_Utils::is_auditable_api_request( '/api/v1/token-validate' ) ) {
 					Mo_API_Authentication_Utils::increment_blocked_counter( Mo_API_Authentication_Constants::INVALID_CREDENTIALS );
 				}
+				// Increment rate limit counter for invalid signature.
+				mo_api_auth_increment_rate_limit();
 				$response = array(
 					'status'            => 'error',
 					'error'             => 'INVALID_SIGNATURE',

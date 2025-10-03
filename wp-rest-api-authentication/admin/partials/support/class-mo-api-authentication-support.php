@@ -58,7 +58,7 @@ class Mo_API_Authentication_Support {
 						<button id="mo_api_authentication_WCPS_loading" type="button" class="btn btn-sm mo_rest_api_button text-white" onclick="mo_api_authentication_install_and_activate_wcps_free(<?php echo esc_attr( file_exists( $WCPS_plugin_path ) ); ?>)">
 						<?php
 						if ( file_exists( $WCPS_plugin_path ) ) {
-							if ( is_plugin_active( $WCPS_plugin_name .'/products-sync-for-woocommerce.php' ) ) {
+							if ( is_plugin_active( $WCPS_plugin_name . '/products-sync-for-woocommerce.php' ) ) {
 								?>
 								<span style="display: inline-flex; align-items: center; gap: 6px;">
 								<svg style="transform: translateY(2px);" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" width="15" height="15" viewBox="0 0 256 256" xml:space="preserve"><defs></defs><g style="stroke: none; stroke-width: 0; stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-miterlimit: 10; fill: none; fill-rule: nonzero; opacity: 1;" transform="translate(1.4065934065934016 1.4065934065934016) scale(2.81 2.81)"><path d="M 45 90 C 20.187 90 0 69.813 0 45 C 0 20.187 20.187 0 45 0 c 24.813 0 45 20.187 45 45 C 90 69.813 69.813 90 45 90 z" style="stroke: none; stroke-width: 1; stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-miterlimit: 10; fill: rgb(0,186,119); fill-rule: nonzero; opacity: 1;" transform=" matrix(1 0 0 1 0 0) " stroke-linecap="round"/><polygon points="35.86,69.67 17.5,51.31 26.66,42.15 35.86,51.34 63.34,23.87 72.5,33.03 " style="stroke: none; stroke-width: 1; stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-miterlimit: 10; fill: rgb(255,255,255); fill-rule: nonzero; opacity: 1;" transform="  matrix(1 0 0 1 0 0) "/></g></svg>
@@ -76,7 +76,7 @@ class Mo_API_Authentication_Support {
 					</p>
 				</div>
 			</div>
-            <hr>
+			<hr>
 			<div>
 				<h6>Connect to external APIs | Custom endpoints for WP</h6>
 				<p class="text-muted mx-3 mo_rest_api_primary_font" style="text-align: justify;">Create your own REST API endpoints in WordPress to interact with WordPress database to fetch, insert, update, delete data. Also, any external APIs can be connected to WordPress for interaction between WordPress & External application.</p>
@@ -90,7 +90,7 @@ class Mo_API_Authentication_Support {
 								<span style="display: inline-flex; align-items: center; gap: 6px;">
 								<svg style="transform: translateY(2px);" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" width="15" height="15" viewBox="0 0 256 256" xml:space="preserve"><defs></defs><g style="stroke: none; stroke-width: 0; stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-miterlimit: 10; fill: none; fill-rule: nonzero; opacity: 1;" transform="translate(1.4065934065934016 1.4065934065934016) scale(2.81 2.81)"><path d="M 45 90 C 20.187 90 0 69.813 0 45 C 0 20.187 20.187 0 45 0 c 24.813 0 45 20.187 45 45 C 90 69.813 69.813 90 45 90 z" style="stroke: none; stroke-width: 1; stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-miterlimit: 10; fill: rgb(0,186,119); fill-rule: nonzero; opacity: 1;" transform=" matrix(1 0 0 1 0 0) " stroke-linecap="round"/><polygon points="35.86,69.67 17.5,51.31 26.66,42.15 35.86,51.34 63.34,23.87 72.5,33.03 " style="stroke: none; stroke-width: 1; stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-miterlimit: 10; fill: rgb(255,255,255); fill-rule: nonzero; opacity: 1;" transform="  matrix(1 0 0 1 0 0) "/></g></svg>
 								<?php
-								echo'Go to Settings';
+									echo 'Go to Settings';
 							} else {
 								echo 'Activate Now';
 							}

@@ -15,16 +15,16 @@ if ( ! defined( 'ABSPATH' ) ) {
  * Adding required files.
  */
 require 'support' . DIRECTORY_SEPARATOR . 'class-mo-api-authentication-support.php';
-require 'support'. DIRECTORY_SEPARATOR . 'class-mo-api-authentication-faq.php';
-require 'config'. DIRECTORY_SEPARATOR . 'class-mo-api-authentication-config.php';
-require 'account'. DIRECTORY_SEPARATOR . 'class-mo-api-authentication-account.php';
-require 'demo'. DIRECTORY_SEPARATOR . 'class-mo-api-authentication-demo.php';
-require 'postman'. DIRECTORY_SEPARATOR . 'class-mo-api-authentication-postman.php';
-require 'advanced'. DIRECTORY_SEPARATOR . 'class-mo-api-authentication-advancedsettings.php';
-require 'advanced'. DIRECTORY_SEPARATOR . 'class-mo-api-authentication-protectedrestapis.php';
-require 'custom-api-integration'. DIRECTORY_SEPARATOR . 'class-mo-api-authentication-custom-api-integration.php';
-require 'custom-api-integration'. DIRECTORY_SEPARATOR . 'class-mo-api-authentication-third-party-integrations.php';
-require 'auditing'. DIRECTORY_SEPARATOR . 'class-mo-api-authentication-auditing.php';
+require 'support' . DIRECTORY_SEPARATOR . 'class-mo-api-authentication-faq.php';
+require 'config' . DIRECTORY_SEPARATOR . 'class-mo-api-authentication-config.php';
+require 'account' . DIRECTORY_SEPARATOR . 'class-mo-api-authentication-account.php';
+require 'demo' . DIRECTORY_SEPARATOR . 'class-mo-api-authentication-demo.php';
+require 'postman' . DIRECTORY_SEPARATOR . 'class-mo-api-authentication-postman.php';
+require 'advanced' . DIRECTORY_SEPARATOR . 'class-mo-api-authentication-advancedsettings.php';
+require 'advanced' . DIRECTORY_SEPARATOR . 'class-mo-api-authentication-protectedrestapis.php';
+require 'custom-api-integration' . DIRECTORY_SEPARATOR . 'class-mo-api-authentication-custom-api-integration.php';
+require 'custom-api-integration' . DIRECTORY_SEPARATOR . 'class-mo-api-authentication-third-party-integrations.php';
+require 'auditing' . DIRECTORY_SEPARATOR . 'class-mo-api-authentication-auditing.php';
 
 /**
  * Main menu

@@ -91,12 +91,16 @@ function mo_api_auth_method_get_token( $request ) {
 			$token_data = mo_api_auth_create_jwt_token( $client_secret, $user );
 			// The Open API success request counter is increasing.
 			Mo_API_Authentication_Utils::increment_success_counter( Mo_API_Authentication_Constants::OPEN_API );
-			$response   = rest_ensure_response( $token_data );
+			$response = rest_ensure_response( $token_data );
 			echo wp_json_encode( $token_data );
 			exit;
 		} else {
 			// Invalid credentials counter is increasing.
 			Mo_API_Authentication_Utils::increment_blocked_counter( Mo_API_Authentication_Constants::INVALID_CREDENTIALS );
+
+			// Increment rate limit counter for invalid credentials.
+			mo_api_auth_increment_rate_limit();
+
 			$response = array(
 				'status'            => 'error',
 				'error'             => 'INVALID_CREDENTIALS',
@@ -108,6 +112,10 @@ function mo_api_auth_method_get_token( $request ) {
 	} else {
 		// Invalid credentials counter is increasing.
 		Mo_API_Authentication_Utils::increment_blocked_counter( Mo_API_Authentication_Constants::INVALID_CREDENTIALS );
+
+		// Increment rate limit counter for malformed requests.
+		mo_api_auth_increment_rate_limit();
+
 		$response = array(
 			'status'            => 'error',
 			'error'             => 'FORBIDDEN',
@@ -207,6 +215,62 @@ function mo_api_auth_restrict_rest_api_for_invalid_users() {
 	Miniorange_API_Authentication_Admin::mo_api_auth_else();
 }
 
+/**
+ * Check rate limit.
+ *
+ * @return bool
+ */
+function mo_api_auth_check_rate_limit() {
+	$ip_address    = mo_api_auth_get_client_ip();
+	$transient_key = 'mo_api_auth_rate_limit_' . md5( $ip_address );
+	$max_requests  = 5;
+
+	// Get current request count.
+	$current_count = (int) get_transient( $transient_key );
+
+	if ( $current_count >= $max_requests ) {
+		return false;
+	}
+
+	return true;
+}
+
+/**
+ * Increment rate limit.
+ *
+ * @return void
+ */
+function mo_api_auth_increment_rate_limit() {
+	$ip_address    = mo_api_auth_get_client_ip();
+	$transient_key = 'mo_api_auth_rate_limit_' . md5( $ip_address );
+
+	// Check if transient exists.
+	$current_count = get_transient( $transient_key );
+
+	if ( false === $current_count ) {
+		// Transient doesn't exist - create new one with count = 1 for 60 seconds.
+		set_transient( $transient_key, 1, 60 );
+	} else {
+		// Transient exists - just increment count by 1.
+		$new_count = (int) $current_count + 1;
+		set_transient( $transient_key, $new_count, 60 );
+	}
+}
+
+/**
+ * Get client IP address.
+ *
+ * @return string
+ */
+function mo_api_auth_get_client_ip() {
+	if ( ! empty( $_SERVER['REMOTE_ADDR'] ) ) {
+		$ip = sanitize_text_field( wp_unslash( $_SERVER['REMOTE_ADDR'] ) );
+		if ( filter_var( $ip, FILTER_VALIDATE_IP ) ) {
+			return $ip;
+		}
+	}
+	return '0.0.0.0';
+}
 
 /**
  * Check if valid request.
@@ -245,14 +309,12 @@ function mo_api_auth_is_valid_request() {
 		} elseif ( sanitize_text_field( wp_unslash( $_GET['mo_rest_api_test_config'] ) ) === 'jwt_auth' ) { //phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Ignoring nonce validation as we are fetching data from URL and not form submission
 			$response = Mo_API_Authentication_JWT_Auth::mo_api_auth_is_valid_request( $headers );
 		}
-	} else {
-		if ( get_option( 'mo_api_authentication_selected_authentication_method' ) === 'basic_auth' ) {
+	} elseif ( get_option( 'mo_api_authentication_selected_authentication_method' ) === 'basic_auth' ) {
 			$response = Mo_API_Authentication_Basic_OAuth::mo_api_auth_is_valid_request( $headers );
-		} elseif ( get_option( 'mo_api_authentication_selected_authentication_method' ) === 'tokenapi' ) {
-			$response = Mo_API_Authentication_TokenAPI::mo_api_auth_is_valid_request( $headers );
-		} elseif ( get_option( 'mo_api_authentication_selected_authentication_method' ) === 'jwt_auth' ) {
-			$response = Mo_API_Authentication_JWT_Auth::mo_api_auth_is_valid_request( $headers );
-		}
+	} elseif ( get_option( 'mo_api_authentication_selected_authentication_method' ) === 'tokenapi' ) {
+		$response = Mo_API_Authentication_TokenAPI::mo_api_auth_is_valid_request( $headers );
+	} elseif ( get_option( 'mo_api_authentication_selected_authentication_method' ) === 'jwt_auth' ) {
+		$response = Mo_API_Authentication_JWT_Auth::mo_api_auth_is_valid_request( $headers );
 	}
 
 	return $response;

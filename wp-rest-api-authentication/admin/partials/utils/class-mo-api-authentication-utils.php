@@ -194,10 +194,10 @@ class Mo_API_Authentication_Utils {
 	}
 
 		/**
-	 * Increment the success counter for a specific API type.
-	 *
-	 * @param string $type The type of API (e.g., 'Open_API', 'Protected_API').
-	 */
+		 * Increment the success counter for a specific API type.
+		 *
+		 * @param string $type The type of API (e.g., 'Open_API', 'Protected_API').
+		 */
 	public static function increment_success_counter( $type ) {
 		wp_cache_delete( 'api_access_counters', 'options' );
 		$counters = get_option( 'api_access_counters', array() );
@@ -240,5 +240,22 @@ class Mo_API_Authentication_Utils {
 			}
 		}
 		return false;
+	}
+
+	/**
+	 * Send rate limit exceeded response.
+	 * This function sends a standardized 429 Too Many Requests response.
+	 *
+	 * @return void
+	 */
+	public static function send_rate_limit_exceeded_response() {
+		$response = array(
+			'status'            => 'error',
+			'error'             => 'TOO_MANY_REQUESTS',
+			'code'              => '429',
+			'error_description' => 'Too many requests. Please try again later.',
+		);
+		header( 'Retry-After: 60' );
+		wp_send_json( $response, 429 );
 	}
 }

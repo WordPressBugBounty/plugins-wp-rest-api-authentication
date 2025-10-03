@@ -162,9 +162,14 @@ function mo_api_authentication_export_plugin_config() {
  * Download Postman sample.
  *
  * @param mixed $method contains the authentication method.
- * @return void
+ * @return mixed
  */
 function mo_api_authentication_postman_download( $method ) {
+	// Check if required functions exist.
+	if ( ! function_exists( 'download_url' ) || ! function_exists( 'wp_upload_dir' ) ) {
+		return new WP_Error( 'server_error', 'Server configuration error', array( 'status' => 500 ) );
+	}
+
 	$all_files_url = array(
 		'api-key'                  => 'https://developers.miniorange.com/static/postman/wp-rest-api-authentication/API_KEY_AUTHENTICATION_REQUEST.zip',
 		'basic-username-password'  => 'https://developers.miniorange.com/static/postman/wp-rest-api-authentication/BASIC_AUTHENTICATION_USERNAME_PASSWORD.zip',
@@ -173,24 +178,30 @@ function mo_api_authentication_postman_download( $method ) {
 		'jwt-resource'             => 'https://developers.miniorange.com/static/postman/wp-rest-api-authentication/JWT_AUTHENTICATION_RESOURCE_REQUEST.zip',
 	);
 
-	// Create postman sample folder if not exist.
 	$upload_dir = wp_upload_dir();
-	if ( $upload_dir && isset( $upload_dir['basedir'] ) ) {
-		$base_upload_dir       = $upload_dir['basedir'];
-		$postman_sample_folder = $base_upload_dir . DIRECTORY_SEPARATOR . 'postman-sample';
-
-		if ( ! file_exists( $postman_sample_folder ) && ! is_dir( $postman_sample_folder ) ) {
-			wp_mkdir_p( $postman_sample_folder );
-		}
+	if ( is_wp_error( $upload_dir ) || ! isset( $upload_dir['basedir'] ) ) {
+		return new WP_Error( 'upload_error', 'Unable to access upload directory', array( 'status' => 500 ) );
 	}
 
-	$filepath = $postman_sample_folder . DIRECTORY_SEPARATOR . $method . '.zip';
+	$postman_sample_folder = $upload_dir['basedir'] . DIRECTORY_SEPARATOR . 'postman-sample';
+	if ( ! file_exists( $postman_sample_folder ) && ! is_dir( $postman_sample_folder ) ) {
+		wp_mkdir_p( $postman_sample_folder );
+	}
 
+	if ( ! isset( $all_files_url[ $method ] ) ) {
+		return new WP_Error( 'invalid_method', 'Invalid method specified', array( 'status' => 400 ) );
+	}
+
+	$filepath = $postman_sample_folder . DIRECTORY_SEPARATOR . sanitize_file_name( $method ) . '.zip';
 	if ( ! file_exists( $filepath ) ) {
-		// Download file.
 		$tmp_file = download_url( $all_files_url[ $method ], 500000, false );
-		// Copies the file to the final destination and deletes temporary file.
-		copy( $tmp_file, $filepath );
+		if ( is_wp_error( $tmp_file ) ) {
+			return new WP_Error( 'download_failed', 'Failed to download file', array( 'status' => 500 ) );
+		}
+		if ( ! copy( $tmp_file, $filepath ) ) {
+			unlink( $tmp_file );
+			return new WP_Error( 'copy_failed', 'Failed to copy file', array( 'status' => 500 ) );
+		}
 		unlink( $tmp_file );
 	}
 

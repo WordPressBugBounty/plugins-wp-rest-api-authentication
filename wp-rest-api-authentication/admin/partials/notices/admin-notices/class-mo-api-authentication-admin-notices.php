@@ -44,7 +44,7 @@ class Mo_API_Authentication_Admin_Notices {
 
 		$current_url = isset( $_SERVER['REQUEST_URI'] ) ? esc_url_raw( wp_unslash( $_SERVER['REQUEST_URI'] ) ) : '';
 
-		if ( strpos( $current_url, 'admin.php' ) !== false) {
+		if ( strpos( $current_url, 'admin.php' ) !== false ) {
 			return;
 		}
 
@@ -73,7 +73,7 @@ class Mo_API_Authentication_Admin_Notices {
 						<h3>miniOrange API Authentication Analytics</h3>
 					</div>
 					<div class="mo-api-alert">
-					<p>Alert: <?php echo esc_html( $open_api_access ); ?> unrestricted APIs accessed. Each one could be an open door to vulnerabilities, risking data breaches and unauthorized control. Check your unrestricted API's on this <a href="<?php echo esc_url(admin_url('admin.php?page=mo_api_authentication_settings&tab=protectedrestapis')); ?>">link</a>.</p>
+					<p>Alert: <?php echo esc_html( $open_api_access ); ?> unrestricted APIs accessed. Each one could be an open door to vulnerabilities, risking data breaches and unauthorized control. Check your unrestricted API's on this <a href="<?php echo esc_url( admin_url( 'admin.php?page=mo_api_authentication_settings&tab=protectedrestapis' ) ); ?>">link</a>.</p>
 					</div>
 					<div class="mo-api-summary-table">
 						<div class="mo-api-summary-info-row">
@@ -83,7 +83,7 @@ class Mo_API_Authentication_Admin_Notices {
 							<div class="info-title">Blocked API Access</div>
 						</div>
 						<div class="mo-api-summary-info-row">
-							<div class="info-value"><?php echo esc_html( $total_apis  ); ?></div>
+							<div class="info-value"><?php echo esc_html( $total_apis ); ?></div>
 							<div class="info-value"><?php echo esc_html( $open_api_access ); ?></div>
 							<div class="info-value"><?php echo esc_html( $authorized_api_access ); ?></div>
 							<div class="info-value"><?php echo esc_html( $total_blocked ); ?></div>

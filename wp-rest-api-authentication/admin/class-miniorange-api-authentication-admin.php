@@ -200,8 +200,16 @@ class Miniorange_API_Authentication_Admin {
 	 * @return void
 	 */
 	public function mo_api_auth_menu_options() {
-		wp_enqueue_script( 'mo_api_authentication_adv_button_script',plugins_url( 'js/advertisementButton.js', __FILE__ ), MINIORANGE_API_AUTHENTICATION_VERSION, array(), true);
-		wp_localize_script('mo_api_authentication_adv_button_script','moRestData',array('ajax_url' => admin_url('admin-ajax.php'),'nonce_wcps' => wp_create_nonce('mo_rest_api_install_and_activate_wcps_free'),'nonce_caw' => wp_create_nonce('mo_rest_api_install_and_activate_caw_free')));
+		wp_enqueue_script( 'mo_api_authentication_adv_button_script', plugins_url( 'js/advertisementButton.js', __FILE__ ), MINIORANGE_API_AUTHENTICATION_VERSION, array(), true );
+		wp_localize_script(
+			'mo_api_authentication_adv_button_script',
+			'moRestData',
+			array(
+				'ajax_url'   => admin_url( 'admin-ajax.php' ),
+				'nonce_wcps' => wp_create_nonce( 'mo_rest_api_install_and_activate_wcps_free' ),
+				'nonce_caw'  => wp_create_nonce( 'mo_rest_api_install_and_activate_caw_free' ),
+			)
+		);
 		mo_api_authentication_is_customer_registered();
 		mo_api_authentication_main_menu();
 	}
@@ -339,6 +347,11 @@ class Miniorange_API_Authentication_Admin {
 	 * @return void
 	 */
 	public function mo_rest_token_generation_callback( $request_body ) {
+		// Check rate limiting at the start.
+		if ( ! mo_api_auth_check_rate_limit() ) {
+			Mo_API_Authentication_Utils::send_rate_limit_exceeded_response();
+		}
+
 		$json     = $request_body->get_params();
 		$username = isset( $json['username'] ) ? sanitize_user( $json['username'] ) : false;
 		$password = isset( $json['password'] ) ? $json['password'] : false;
@@ -407,6 +420,11 @@ class Miniorange_API_Authentication_Admin {
 	 * @return void
 	 */
 	public function mo_rest_jwt_validate_token( $return_response = true ) {
+		// Check rate limiting at the start.
+		if ( ! mo_api_auth_check_rate_limit() ) {
+			Mo_API_Authentication_Utils::send_rate_limit_exceeded_response();
+		}
+
 		$headerkey = mo_api_auth_getallheaders();
 		$headerkey = array_change_key_case( $headerkey, CASE_UPPER );
 		$response  = Mo_API_Authentication_JWT_Auth::mo_api_auth_is_valid_request( $headerkey );
@@ -474,7 +492,7 @@ class Miniorange_API_Authentication_Admin {
 	 */
 	public static function include_notice_class() {
 
-		if( ! current_user_can( 'manage_options' ) ) {
+		if ( ! current_user_can( 'manage_options' ) ) {
 			return;
 		}
 
