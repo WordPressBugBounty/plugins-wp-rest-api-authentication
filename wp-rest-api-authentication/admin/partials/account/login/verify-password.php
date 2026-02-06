@@ -18,7 +18,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  *
  * @return void
  */
-function mo_api_authentication_verify_password_ui() {
+function mo_api_authentication_verify_password_ui() { //phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedFunctionFound -- The functino is already prefixed with mo_api_authentication_.
 	?>
 	<div class="border border-1 rounded-4 p-3 bg-white">
 		<form method="post">

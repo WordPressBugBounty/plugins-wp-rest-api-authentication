@@ -1,25 +1,56 @@
-=== REST API Authentication for WP - JWT Auth and more ===
+=== JWT Authentication for WP API ===
 Contributors: miniOrange
-Tags: rest-api, jwt, jwt authentication, api key, REST, secure api, token, endpoints, json web token, oauth,
+Tags: rest-api, api key, jwt authentication, REST, secure api, token, endpoints, json web token, oauth,
 Requires at least: 3.0.1
-Tested up to: 6.8
-Stable tag: 4.0.0
+Tested up to: 6.9
+Stable tag: 4.2.0
 Requires PHP: 5.6
 License: Expat
 License URI: https://plugins.miniorange.com/mit-license
 
-Secure and protect your REST API endpoints from unauthorized access using JWT token, Basic Authentication, API Key, OAuth 2, or external token.
+Secure and protect WordPress REST API from unauthorized access using JWT token, Basic Authentication, API Key, OAuth 2, or external token.
 
 
 == Description ==
-**WordPress REST API endpoints** are **open and unsecured by default** through which anyone can access your site data. With our **[REST API Authentication for WP plugin](https://plugins.miniorange.com/wordpress-rest-api-authentication)**, secure your WordPress APIs from unauthorized users.  
+**WordPress REST API endpoints** are **open and unsecured by default** which can be used to access your site data. Secure WordPress APIs from unauthorized users with our **[JWT Authentication for WP API plugin](https://plugins.miniorange.com/wordpress-rest-api-authentication)**.  
 
-**Protect WP REST API endpoints** from public access by:
+Our plugin offers below authentication methods to **Protect WP REST API endpoints**:
 - [JWT Authentication](https://plugins.miniorange.com/wordpress-rest-api-jwt-authentication-method)
 - [Basic Authentication](https://plugins.miniorange.com/wordpress-rest-api-basic-authentication-method)
 - [API Key Authentication](https://plugins.miniorange.com/rest-api-key-authentication-method) 
 - [OAuth 2.0 Authentication](https://plugins.miniorange.com/wordpress-rest-api-oauth-2-0-authentication-method)
 - External Token based Authentication 2.0/OIDC/JWT/[Firebase](https://firebase.google.com/docs/auth/admin/create-custom-tokens) provider's token authentication methods. 
+
+
+You can authenticate default WordPress endpoints and custom-developed REST endpoints and third-party plugin REST API endpoints like that of [Woocommerce](https://wordpress.org/plugins/woocommerce/), [Learndash](https://www.learndash.com/), [Buddypress](https://wordpress.org/plugins/buddypress/), [Gravity Forms](https://www.gravityforms.com/), [CoCart](https://wordpress.org/plugins/cart-rest-api-for-woocommerce/), etc.
+
+[youtube https://www.youtube.com/watch?v=IsyKI7eEV-I&t=2s]
+
+ 
+==WP REST API Authentication Methods in our plugin==
+* [JWT Authentication](https://plugins.miniorange.com/wordpress-rest-api-jwt-authentication-method#step_a1)
+Provides an endpoint where you can pass the user credentials, and it will generate a JWT (JSON Web Token), which you can use to access the WordPress REST APIs accordingly.
+Additionally, to maintain a seamless user experience without frequent logins needed due to token expiry, you can use our *Refresh and Revoke token* mechanisms feature.
+When the access token expires, instead of forcing the user to log in again, the client can request a new access token using a valid refresh token.
+* [API Key Authentication](https://plugins.miniorange.com/rest-api-key-authentication-method#step_a)
+* [Basic Authentication](https://plugins.miniorange.com/wordpress-rest-api-basic-authentication-method): 
+           	- 1. **Username: Password** 
+           	- 2. **Client-ID: Client-Secret**
+* [OAuth 2.0 Authentication](https://plugins.miniorange.com/wordpress-rest-api-oauth-2-0-authentication-method#step_a)
+           	- 1. **Password Grant**
+                - 2. **Client Credentials Grant**
+* [Third Party Provider Authentication](https://plugins.miniorange.com/wordpress-rest-api-authentication-using-third-party-provider#step_a)
+
+
+==Following are some of the integrations that are possible with WP REST API Authentication:==
+* Learndash API Authentication
+* Custom Built REST API Endpoints Authentication
+* BuddyPress API Authentication
+* WooCommerce API Authentication
+* Gravity Form API Authentication
+* External/Third-party plugin API endpoints integration in WordPress
+ 
+You can also disable the WP REST APIs with our plugin such that no one can make API calls to your WordPress REST API endpoints.Our plugin also provides **Refresh and Revoke Token** that can be used to improve the API security. 
 
 ## Benefits of Refresh Token ##
 
@@ -33,92 +64,49 @@ Secure and protect your REST API endpoints from unauthorized access using JWT to
 - Enables admin-triggered logouts or session control.
 - Useful for complying with stricter session policies.
 
+With this plugin, the user is allowed to access your site's resources only after successful WP REST API authentication. JWT Authentication for WP API plugin will make your **WordPress endpoints secure from unauthorized access.**
 
-This plugin will make sure that only after successful authentication, the user is allowed to access your site's resources. REST API Authentication will make your **WordPress endpoints secure from unauthorized access.**
-
-Along with the default and standard WordPress REST API endpoints, with REST API Authentication for WP, you can authenticate custom-developed REST endpoints and third-party plugin REST API endpoints like that of [Woocommerce](https://wordpress.org/plugins/woocommerce/), [Learndash](https://www.learndash.com/), [Buddypress](https://wordpress.org/plugins/buddypress/), [Gravity Forms](https://www.gravityforms.com/), [CoCart](https://wordpress.org/plugins/cart-rest-api-for-woocommerce/), etc.
-
-[youtube https://www.youtube.com/watch?v=IsyKI7eEV-I&t=2s]
-
- 
-==REST API Authentication Methods in our WordPress plugin==
-* [JWT Authentication](https://plugins.miniorange.com/wordpress-rest-api-jwt-authentication-method#step_a1)
-To maintain a seamless user experience without frequent logins needed due to token expiry, you can use our Refresh and Revoke token mechanisms feature.
-When the access token expires, instead of forcing the user to log in again, the client can request a new access token using a valid refresh token.
-* [API Key Authentication](https://plugins.miniorange.com/rest-api-key-authentication-method#step_a)
-* [Basic Authentication](https://plugins.miniorange.com/wordpress-rest-api-basic-authentication-method): 
-           	- 1. **Username: Password** 
-           	- 2. **Client-ID: Client-Secret**
-* [OAuth 2.0 Authentication](https://plugins.miniorange.com/wordpress-rest-api-oauth-2-0-authentication-method#step_a) _**[Most Secure]**_
-           	- 1. **Password Grant**
-                - 2. **Client Credentials Grant**
-* [Third Party Provider Authentication](https://plugins.miniorange.com/wordpress-rest-api-authentication-using-third-party-provider#step_a)
-
-
-==Following are some of the integrations that are possible with REST API Authentication:==
-== Learndash API Authentication ==
-* This plugin allows you to securely access Learndash user profiles, courses, groups & other Learndash API endpoints.
-== Custom Built REST API Endpoints Authentication ==
-* The plugin **supports authentication for your own built custom REST API routes/endpoints**. You can secure these API endpoints using the plugin’s highly secured authentication methods.
-== BuddyPress API Authentication ==
-* **Securely access BuddyPress REST API endpoints** via authentication using different authentication methods like JWT token (JSON Web Token), API Keys etc.
-== WooCommerce API Authentication ==
-* **REST API Authentication for WP** allows you to authenticate the WooCommerce store APIs with your mobile or desktop application & extend the features and functionality of your eCommerce store.
-== Gravity Form API Authentication ==
-* This plugin supports interaction with Gravity Forms from an external client application which can be your Android/iOS application. 
-== External/Third-party plugin API endpoints integration in WordPress ==
-* These integrations can be used to fetch/update the data from the third-party side into WordPress that can be used to display it on the WordPress site as well, and this data can be processed further to use with any other plugin or WordPress events.
- 
-== FEATURES ==
- 
-FREE PLAN
-
-* Authenticate only default WordPress REST API endpoints.
+== Plugin Feature List ==
+ ## FREE PLAN
+* Authenticate only default core WordPress REST API endpoints.
 * Basic Authentication with username and password.
 * JWT Authentication (JSON Web Token Authentication).
-* Selective API protection.
+* Enable Selective API protection.
 * Restrict non-logged-in users to access REST API endpoints.
- 
-PREMIUM PLANS
+* Disable WP REST APIs
+
+## PREMIUM PLAN
  
 * Authenticate all REST API endpoints (Default WP, Custom APIs,Third-Party plugins)
 * **JWT Token Authentication** (JSON Web Token Authentication)
-* **Refresh and Revoke token endpoints
-* **API Key Authentication**
-* **Basic Authentication** (username/password and email/password)
-* **OAuth 2.0 Authentication**
+* Login, Refresh and Revoke token endpoints for token management
+* API Key Authentication
+* Basic Authentication (username/password and email/password)
+* OAuth 2.0 Authentication
 * Universal API key and User-specific API key for authentication
 * Selective API protection.
+* Disable WP REST APIs
 * Time-based token expiry
-* Role-based authentication
+* Role-based WP REST API authentication
 * Custom Header support rather than just _Authorization_ to increase security.
 * Create users in WordPress based on third-party provider access tokens (JWT tokens) authentication.
 
-== Our Other Popular REST API Integrations ==
-
-* [Custom API for WP plugin](https://wordpress.org/plugins/custom-api-for-wp/) to create and connect external APIs to your WordPress site.
-
-* [Sync products to WooCommerce | Import WooCommerce products using API](https://wordpress.org/plugins/products-sync-for-woocommerce) to connect to your Supplier, Inventory, ERP, and CRM APIs to sync the products to your [WooCommerce](https://wordpress.org/plugins/woocommerce/) store with all the product data automatically.
-
-* [Sync Custom Posts using External API](https://plugins.miniorange.com/wordpress-sync-posts-from-api) to automatically sync the data to custom posts in WordPress from the external REST API data. 
-
-* [WordPress JWT Single Sign-On (SSO) Auto login](https://wordpress.org/plugins/login-register-using-jwt/) to sync user sessions or auto-login to WordPress and other connected sites
 
 == Installation ==
  
-This section describes how to install the REST API Authentication for WP and get it working.
+This section describes how to install the JWT Authentication for WP API plugin and get it working.
  
 = From your WordPress dashboard =
  
 1. Visit `Plugins > Add New`
-2. Search for `REST API Authentication`. Find and Install the `api authentication` plugin by miniOrange
+2. Search for `JWT Authentication for WP API `. Find and Install the `JWT Authentication for WP API` plugin by miniOrange
 3. Activate the plugin
  
 = From WordPress.org =
  
-1. Download REST API Authentication for WP.
+1. Download JWT Authentication for WP API .
 2. Unzip and upload the `wp-rest-api-authentication` directory to your `/wp-content/plugins/` directory.
-3. Activate REST API Authentication for WP from your Plugins page.
+3. Activate JWT Authentication for WP API from your Plugins page.
  
  
 == Privacy ==
@@ -127,54 +115,37 @@ This plugin does not store any user data.
 
 == Frequently Asked Questions ==
 
-= What is the use of API Authentication =
-    The REST API authentication prevents unauthorized access to your WordPress APIs. It reduces potential attack factors.
+= What is the use of JWT Authentication for WP API  =
+    JWT Authentication for WP API plugin prevents unauthorized access to your WordPress APIs. It reduces potential attack by securing the WP APIs.
 	
 = How can I authenticate the REST APIs using this plugin? =
-	This plugin supports 5 methods: i) authentication through JWT token, ii) authentication through user credentials passed as an encrypted token, iii) authentication through API Key, iv) authentication through OAuth 2.0 protocol and v) authentication via JWT token obtained from the external OAuth/OpenId providers which include Google, Facebook, Azure, AWS Cognito, Apple etc and also from Firebase. 
+	This plugin supports 5 methods: i) JWT Token based authentication, ii) authentication through user credentials passed as an encrypted token, iii) API Key authentication, iv) OAuth 2.0 Authentication protocol and v) authentication via JWT token obtained from the external OAuth/OpenId providers which include Google, Facebook, Azure, AWS Cognito, Apple etc and also from Firebase. 
 
-= Can I secure the APIs with a JWT token (JSON Web Tokens)? =
-	Yes, our plugin supports API authentication through JWT (JSON Web Token). The JWT is validated every time an API request is made; only the requested resource for the API call is allowed to access it if the JWT validation is successful.
-
-= How does the REST API Authentication plugin work? =
-	You just have to select your Authentication Method in the plugin.
+= How does the JWT Authentication for WP API plugin work? =
+	You just have to select your WP REST API Authentication Method in the plugin.
 	Based on the method you have selected, you will get the authorization code/token after sending the token request.
 	Access your REST API with the code/token you received in the previous step. 
 
-= Does this plugin provide the Basic authentication method for API authentication? = 
+= Does this plugin provide the Basic authentication method for WP REST API authentication? = 
 	Yes, the plugin provides Basic authentication with the following 2 methods -
 	a.) WP Username & Password b.) Client Credentials.
 	The plugin provides you with more security for Basic auth token validation using a highly secure HMAC algorithm.
 
-= Does this plugin enable the authentication for my custom-built REST endpoints? = 
-	Yes, the plugin supports the authentication for custom-built REST endpoints using rest_api_init or register_rest_route.
+= Can I authenticate custom-built REST endpoints and Third-Party plugin APIs? = 
+	Yes, the plugin supports the authentication for custom-built REST endpoints and Third-Party plugin APIs.
 
 = Does this plugin disable REST APIs of WordPress? =
 	Yes, this plugin by default disables all the WP REST APIs, which can only be accessed with allowed authentication and authorization, but it provides a feature where you can choose which particular endpoints you want to disable and which ones to make accessible publicly. 
 
 = How do I log in and register WordPress users using the WordPress REST API endpoint? = 
 	This plugin provides this HTTP POST endpoint `wp-json/api/v1/token,` also called as WordPress login API endpoint, in which you can pass the user's WordPress credentials and this endpoint will validate the user and return you with the appropriate response. 
-	The plugin also supports the authentication and authorization of WordPress users' register REST API.
-
-= How to access draft posts? =
-	You can access draft posts using Basic Auth, OAuth 2.0(using Username: Password), JWT authentication, and API Key auth(using Universal Key) methods. Pages/posts need to access with the status. The default status used in the request is 'Publish', and any user can access the published post. 
-	To access the pages/posts stored in the draft, you need to append the ?status=draft to the page/post request.
-	For Example:
-	You need to use the below URL format while sending a request to access different types of posts
-	1. Access draft posts only
-		https://<domain>/wp-json/wp/v2/posts?status=draft
-	2. Access all types of posts
-		https://<domain>/wp-json/wp/v2/posts?status=any
-	You just have to change the status(draft, pending, any, publish) as per your requirement. You do not have to pass the status parameter to access published posts.
+	The plugin also supports the WP REST API authentication and authorization of WordPress users' register API.
 
 = How do I authenticate WordPress REST API endpoints using an external JWT token or access token provided by OAuth/OIDC/Social Login providers? = 
-     This plugin provides you with an authentication method called the 'Third Party Provider' authentication method, in which the JWT token or access token is obtained from external identities(OAuth/OIDC/JWT/JWKS providers) like Firebase, Okta, Azure, Keycloak, ADFS, AWS Cognito, Google, Facebook, Apple, etc., can be passed along with API request in the header, and the plugin validates that JWT / access token directly from these external sources/providers. 
+     This plugin provides you with an WP REST API Authentication method called the 'Third Party Provider' authentication method, in which the JWT token or access token is obtained from external identities(OAuth/OIDC/JWT/JWKS providers) like Firebase, Okta, Azure, Keycloak, ADFS, AWS Cognito, Google, Facebook, Apple, etc., can be passed along with API request in the header, and the plugin validates that JWT / access token directly from these external sources/providers. 
 
 = How do I access user-specific data for Woocommerce REST API without the need to pass actual Woocommerce API credentials? =
 	This plugin provides a way to bypass Woocommerce security and instead authenticate APIs using the authentication methods, hence improving the security and preventing Woocommerce credentials from getting compromised. The authentication token passed in the API request will validate the user and result in user-specific data only. For more information, please contact us at apisupport@xecurify.com
-
-= How to enable API access in WooCommerce?
-    You can enable API access in WooCommerce using our REST API Authentication for WP plugin. Please reach out to us at apisupport@xecurify.com for more information.
 	
 = How to achieve auto-login between WordPress and external apps using a token or JWT token?
 	To achieve the auto-login and session sharing, we have another plugin **[WordPress Login & Register using JWT](https://wordpress.org/plugins/login-register-using-jwt/)**   
@@ -184,7 +155,7 @@ This plugin does not store any user data.
 
 == Screenshots ==
 
-1. List of API Authentication Methods
+1. List of WP REST API Authentication Methods
 2. List of Protected WP REST APIs
 3. Basic Authentication method configuration
 4. JWT Authentication method configuration
@@ -194,6 +165,12 @@ This plugin does not store any user data.
 8. API Access Auditing analytics
 
 == Changelog ==
+
+= 4.2.0 =
+* Bug fixes.
+
+= 4.1.0 =
+* Bug fixes.
 
 = 4.0.0 =
 * Security enhancements.

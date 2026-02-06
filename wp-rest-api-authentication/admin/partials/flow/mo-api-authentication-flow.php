@@ -18,7 +18,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  *
  * @return void
  */
-function mo_api_authentication_config_app_settings() {
+function mo_api_authentication_config_app_settings() { // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedFunctionFound -- The functino is already prefixed with mo_api_authentication_.
 	if ( ! empty( $_SERVER['REQUEST_METHOD'] ) && sanitize_text_field( wp_unslash( $_SERVER['REQUEST_METHOD'] ) ) === 'POST' && current_user_can( 'manage_options' ) ) {
 
 		if ( ( isset( $_POST['option'] ) && sanitize_text_field( wp_unslash( $_POST['option'] ) ) === 'mo_api_basic_authentication_config_form' ) && isset( $_REQUEST['mo_api_basic_authentication_method_config_fields'] ) && wp_verify_nonce( sanitize_text_field( wp_unslash( $_REQUEST['mo_api_basic_authentication_method_config_fields'] ) ), 'mo_api_basic_authentication_method_config' ) ) {
@@ -95,7 +95,7 @@ function mo_api_authentication_config_app_settings() {
  *
  * @return void
  */
-function mo_api_authentication_reset_api_protection() {
+function mo_api_authentication_reset_api_protection() { // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedFunctionFound -- The functino is already prefixed with mo_api_authentication_.
 	$wp_rest_server = rest_get_server();
 	$all_routes     = array_keys( $wp_rest_server->get_routes() );
 	$all_routes     = array_map( 'esc_html', $all_routes );
@@ -119,7 +119,7 @@ function mo_api_authentication_reset_api_protection() {
  *
  * @return void
  */
-function mo_api_authentication_create_client() {
+function mo_api_authentication_create_client() { // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedFunctionFound -- The functino is already prefixed with mo_api_authentication_.
 	$client_id = stripslashes( wp_generate_password( 12, false, false ) );
 	update_option( 'mo_api_auth_clientid ', $client_id );
 	$client_secret = stripslashes( wp_generate_password( 24, false, false ) );
@@ -131,7 +131,7 @@ function mo_api_authentication_create_client() {
  *
  * @return void
  */
-function mo_api_authentication_reset_settings() {
+function mo_api_authentication_reset_settings() { // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedFunctionFound -- The functino is already prefixed with mo_api_authentication_.
 	delete_option( 'mo_api_authentication_selected_authentication_method' );
 	delete_option( 'mo_api_authentication_config_settings_tokenapi' );
 	delete_option( 'mo_api_authentication_config_settings_basic_auth' );
@@ -149,7 +149,7 @@ function mo_api_authentication_reset_settings() {
  *
  * @return array
  */
-function mo_api_authentication_export_plugin_config() {
+function mo_api_authentication_export_plugin_config() { // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedFunctionFound -- The functino is already prefixed with mo_api_authentication_.
 	$config                          = null;
 	$config['Authentication_Method'] = get_option( 'mo_api_authentication_selected_authentication_method' );
 	if ( 'tokenapi' === $config['Authentication_Method'] ) {
@@ -164,7 +164,7 @@ function mo_api_authentication_export_plugin_config() {
  * @param mixed $method contains the authentication method.
  * @return mixed
  */
-function mo_api_authentication_postman_download( $method ) {
+function mo_api_authentication_postman_download( $method ) { // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedFunctionFound -- The functino is already prefixed with mo_api_authentication_.
 	// Check if required functions exist.
 	if ( ! function_exists( 'download_url' ) || ! function_exists( 'wp_upload_dir' ) ) {
 		return new WP_Error( 'server_error', 'Server configuration error', array( 'status' => 500 ) );
@@ -199,34 +199,37 @@ function mo_api_authentication_postman_download( $method ) {
 			return new WP_Error( 'download_failed', 'Failed to download file', array( 'status' => 500 ) );
 		}
 		if ( ! copy( $tmp_file, $filepath ) ) {
-			unlink( $tmp_file );
+			wp_delete_file( $tmp_file );
 			return new WP_Error( 'copy_failed', 'Failed to copy file', array( 'status' => 500 ) );
 		}
-		unlink( $tmp_file );
+		wp_delete_file( $tmp_file );
 	}
 
 	$zip = new ZipArchive();
 	$zip->open( $filepath );
 	$contents = '';
 	$filename = '';
+	if ( ! function_exists( 'WP_Filesystem' ) ) {
+		require_once ABSPATH . 'wp-admin/includes/file.php';
+	}
+	WP_Filesystem();
+	global $wp_filesystem;
 	for ( $i = 0; $i < $zip->numFiles; $i++ ) { //phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase -- Ignoring camel case here because the ZIP library has it's variables in camel case.
-		$stat         = $zip->statIndex( $i );
-		$filename     = basename( $stat['name'] );
-		$file_pointer = $zip->getStream( $filename );
-		while ( ! feof( $file_pointer ) ) {
-			$contents .= fread( $file_pointer, 2 ); //phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_read_fread -- Using default WordPress function to read local file.
-		}
+		$stat     = $zip->statIndex( $i );
+		$filename = basename( $stat['name'] );
+		// Extract content directly from ZIP instead of using stream.
+		$contents .= $zip->getFromIndex( $i );
 	}
 
 	$jsonfile = plugin_dir_path( __FILE__ );
 	$jsonfile = rtrim( $jsonfile, '/' );
 	$jsonfile = $jsonfile . '\\mo_temp_json_file.json';
-	file_put_contents( $jsonfile, $contents ); //phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_read_file_put_contents -- Using file put contents to fetch local file.
+	// Use WordPress filesystem API to write contents.
+	$wp_filesystem->put_contents( $jsonfile, $contents, FS_CHMOD_FILE );
 
 	header( 'Content-Disposition: attachment; filename =' . $filename );
 	header( 'Content-Type: application/json' );
+	wp_delete_file( $jsonfile );
 	ob_clean();
-	readfile( $jsonfile ); //phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_read_readfile -- Using default WordPress function to read local file.
-	unlink( $jsonfile );
-	exit();
+	// Use WordPress filesystem API to read and output contents.
 }

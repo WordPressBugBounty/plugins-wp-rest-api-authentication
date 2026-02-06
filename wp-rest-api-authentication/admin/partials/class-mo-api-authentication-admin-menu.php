@@ -31,7 +31,7 @@ require 'auditing' . DIRECTORY_SEPARATOR . 'class-mo-api-authentication-auditing
  *
  * @return void
  */
-function mo_api_authentication_main_menu() {
+function mo_api_authentication_main_menu() { // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedFunctionFound -- The functino is already prefixed with mo_api_authentication_.
 
 	$currenttab = '';
 	if ( isset( $_GET['tab'] ) ) { //phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Ignoring nonce validation because we are directly fetching value from URL and not form submission.

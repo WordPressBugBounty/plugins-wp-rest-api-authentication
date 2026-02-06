@@ -116,9 +116,6 @@ class Mo_API_Authentication_Utils {
 				if ( ! file_exists( $plugin_path ) ) {
 					$temp_file = download_url( $download_link );
 
-					error_log( 'Download URL: ' . $download_link );
-					error_log( 'Temporary file path: ' . $temp_file );
-
 					if ( ! is_wp_error( $temp_file ) ) {
 						$zip = new ZipArchive();
 						$res = $zip->open( $temp_file );

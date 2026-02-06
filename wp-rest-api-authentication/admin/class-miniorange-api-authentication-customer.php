@@ -367,7 +367,6 @@ class Miniorange_API_Authentication_Customer {
 	public function mo_api_authentication_send_email_alert( $email, $phone, $reply, $message, $subject ) {
 
 		$url = get_option( 'host_name', self::HOST_NAME ) . '/moas/api/notify/send';
-
 		$last_requested_api = get_option( 'mo_api_authentication_last_requested_api' );
 		$customer_key       = $this->default_customer_key;
 		$api_key            = $this->default_api_key;
@@ -388,7 +387,6 @@ class Miniorange_API_Authentication_Customer {
 				$apis .= $method . ' ' . $api . '<br>';
 			}
 		}
-		global $user;
 		$user  = wp_get_current_user();
 		$query = '[REST API Authentication for WP: ' . $plugin_version . '] : ' . $message;
 
@@ -445,9 +443,6 @@ class Miniorange_API_Authentication_Customer {
 	 */
 	public function mo_api_auth_send_demo_alert( $email, $demo_plan, $message, $subject ) {
 
-		if ( ! $this->mo_api_authentication_check_internet_connection() ) {
-			return;
-		}
 		$url = get_option( 'host_name', self::HOST_NAME ) . '/moas/api/notify/send';
 
 		$customer_key = $this->default_customer_key;
@@ -456,14 +451,7 @@ class Miniorange_API_Authentication_Customer {
 		$current_time_in_millis = self::get_timestamp();
 		$string_to_hash         = $customer_key . $current_time_in_millis . $api_key;
 		$hash_value             = hash( 'sha512', $string_to_hash );
-		$customer_key_header    = 'Customer-Key: ' . $customer_key;
-		$timestamp_header       = 'Timestamp: ' . $current_time_in_millis;
-		$authorization_header   = 'Authorization: ' . $hash_value;
 		$from_email             = $email;
-		$site_url               = site_url();
-
-		global $user;
-		$user = wp_get_current_user();
 
 		$content = '<div >Hello, </a><br><br><b>Email :</b><a href="mailto:' . $from_email . '" target="_blank">' . $from_email . '</a><br><br><b>Requested Demo for :</b> ' . $demo_plan . '<br><br><b>Requirements (Usecase) :</b> ' . $message . '</div>';
 
@@ -503,14 +491,5 @@ class Miniorange_API_Authentication_Customer {
 			echo 'Something went wrong: ' . esc_html( $error_message );
 			exit();
 		}
-	}
-
-	/**
-	 * Check internet connection.
-	 *
-	 * @return bool
-	 */
-	public function mo_api_authentication_check_internet_connection() {
-		return (bool) @fsockopen( 'login.xecurify.com', 443, $errno, $errstr, 5 ); //phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_read_fsockopen, WordPress.PHP.NoSilencedErrors.Discouraged -- Using default PHP function for checking internet connection.
 	}
 }

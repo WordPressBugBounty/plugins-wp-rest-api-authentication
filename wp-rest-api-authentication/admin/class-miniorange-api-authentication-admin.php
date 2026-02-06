@@ -284,7 +284,7 @@ class Miniorange_API_Authentication_Admin {
 	 * @return bool
 	 */
 	public static function allow_rest_api() {
-		return (bool) apply_filters( 'dra_allow_rest_api', is_user_logged_in() );
+		return (bool) apply_filters( 'dra_allow_rest_api', is_user_logged_in() ); // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound -- The hook cannot be changed since it will break existing user's plugin functionality.
 	}
 
 	/**

@@ -18,7 +18,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  *
  * @return void
  */
-function mo_api_authentication_register_ui() {
+function mo_api_authentication_register_ui() { //phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedFunctionFound -- The functino is already prefixed with mo_api_authentication_.
 	update_option( 'mo_api_authentication_new_registration', 'true' );
 	$current_user = wp_get_current_user();
 	?>
@@ -105,7 +105,7 @@ function mo_api_authentication_register_ui() {
  *
  * @return void
  */
-function mo_api_authentication_show_customer_info() {
+function mo_api_authentication_show_customer_info() { //phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedFunctionFound -- The functino is already prefixed with mo_api_authentication_.
 	?>
 	<div class="border border-1 rounded-4 p-3 bg-white" id="mo_api_authentication_advanced_setting_layout">
 		<form method="post" name="f1">

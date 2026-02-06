@@ -25,7 +25,7 @@ require_once 'class-mo-api-authentication-jwt-auth.php';
  *
  * @return bool
  */
-function mo_api_auth_user_has_capability() {
+function mo_api_auth_user_has_capability() { //phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedFunctionFound -- The functino is already prefixed with mo_api_auth_.
 	$found      = false;
 	$user       = wp_get_current_user();
 	$user_roles = array( 'author', 'editor', 'contributor', 'subscriber', 'administrator' );
@@ -41,7 +41,7 @@ function mo_api_auth_user_has_capability() {
  * @param mixed $request API request content.
  * @return void
  */
-function mo_api_auth_token_endpoint_flow( $request ) {
+function mo_api_auth_token_endpoint_flow( $request ) { //phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedFunctionFound -- The functino is already prefixed with mo_api_auth_.
 	mo_api_auth_method_get_token( $request );
 }
 /**
@@ -50,7 +50,7 @@ function mo_api_auth_token_endpoint_flow( $request ) {
  * @param mixed $request API request content.
  * @return void
  */
-function mo_api_auth_method_get_token( $request ) {
+function mo_api_auth_method_get_token( $request ) { //phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedFunctionFound -- The functino is already prefixed with mo_api_auth_.
 	if ( isset( $request['username'] ) && isset( $request['password'] ) ) {
 		$username = $request['username'];
 		$password = $request['password'];
@@ -133,7 +133,7 @@ function mo_api_auth_method_get_token( $request ) {
  * @param mixed $user WP user data.
  * @return string
  */
-function mo_api_auth_create_jwt_token( $client_secret, $user ) {
+function mo_api_auth_create_jwt_token( $client_secret, $user ) { //phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedFunctionFound -- The functino is already prefixed with mo_api_auth_.
 
 	$iat = time();
 	$exp = time() + 157680000;
@@ -187,14 +187,14 @@ function mo_api_auth_create_jwt_token( $client_secret, $user ) {
  * @param mixed $text text to be encoded.
  * @return string
  */
-function mo_api_authentication_base64_url_encode( $text ) {
+function mo_api_authentication_base64_url_encode( $text ) { //phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedFunctionFound -- The functino is already prefixed with mo_api_authentication_.
 	return rtrim( strtr( base64_encode( $text ), '+/', '-_' ), '=' ); //phpcs:ignore WordPress.PHP.DiscouragedPHPFunctions.obfuscation_base64_encode -- base64 encoding will be required to handle JWT token verification.
 }
 
 /**
  * Restrict REST API for invalid users.
  */
-function mo_api_auth_restrict_rest_api_for_invalid_users() {
+function mo_api_auth_restrict_rest_api_for_invalid_users() { //phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedFunctionFound -- The functino is already prefixed with mo_api_auth_.
 
 	if ( is_user_logged_in() && empty( isset( $_GET['mo_rest_api_test_config'] ) ? sanitize_text_field( wp_unslash( $_GET['mo_rest_api_test_config'] ) ) : '' ) ) { //phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Ignoring nonce validation as we are fetching data from URL and not form submission
 		if ( get_option( 'mo_api_authentication_protectedrestapi_route_whitelist' ) && Miniorange_API_Authentication_Admin::protect_routes( true ) === true ) {
@@ -220,7 +220,7 @@ function mo_api_auth_restrict_rest_api_for_invalid_users() {
  *
  * @return bool
  */
-function mo_api_auth_check_rate_limit() {
+function mo_api_auth_check_rate_limit() { //phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedFunctionFound -- The functino is already prefixed with mo_api_auth_.
 	$ip_address    = mo_api_auth_get_client_ip();
 	$transient_key = 'mo_api_auth_rate_limit_' . md5( $ip_address );
 	$max_requests  = 5;
@@ -240,7 +240,7 @@ function mo_api_auth_check_rate_limit() {
  *
  * @return void
  */
-function mo_api_auth_increment_rate_limit() {
+function mo_api_auth_increment_rate_limit() { //phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedFunctionFound -- The functino is already prefixed with mo_api_auth_.
 	$ip_address    = mo_api_auth_get_client_ip();
 	$transient_key = 'mo_api_auth_rate_limit_' . md5( $ip_address );
 
@@ -262,7 +262,7 @@ function mo_api_auth_increment_rate_limit() {
  *
  * @return string
  */
-function mo_api_auth_get_client_ip() {
+function mo_api_auth_get_client_ip() { //phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedFunctionFound -- The functino is already prefixed with mo_api_auth_.
 	if ( ! empty( $_SERVER['REMOTE_ADDR'] ) ) {
 		$ip = sanitize_text_field( wp_unslash( $_SERVER['REMOTE_ADDR'] ) );
 		if ( filter_var( $ip, FILTER_VALIDATE_IP ) ) {
@@ -277,7 +277,7 @@ function mo_api_auth_get_client_ip() {
  *
  * @return bool
  */
-function mo_api_auth_is_valid_request() {
+function mo_api_auth_is_valid_request() { //phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedFunctionFound -- The functino is already prefixed with mo_api_auth_.
 	$response = '';
 	$headers  = mo_api_auth_getallheaders();
 	$headers  = array_change_key_case( $headers, CASE_UPPER );
@@ -326,7 +326,7 @@ if ( ! function_exists( 'mo_api_auth_getallheaders' ) ) {
 	 *
 	 * @return array
 	 */
-	function mo_api_auth_getallheaders() {
+	function mo_api_auth_getallheaders() { //phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedFunctionFound -- The functino is already prefixed with mo_api_auth_.
 		$headers = array();
 		$server  = array_map( 'sanitize_text_field', $_SERVER );
 		foreach ( $server as $name => $value ) {

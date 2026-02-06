@@ -16,7 +16,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 /**
  * Premium page.
  */
-class Mo_API_Authentication_License {
+class Mo_API_Authentication_License { //phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedClassFound -- Prefix is already added.
 	/**
 	 * Premium Licensing Page.
 	 *

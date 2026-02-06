@@ -50,14 +50,7 @@ class Mo_API_Authentication_Demo {
 		$current_time_in_millis = \Miniorange_API_Authentication_Customer::get_timestamp();
 		$string_to_hash         = $customer_key . $current_time_in_millis . $api_key;
 		$hash_value             = hash( 'sha512', $string_to_hash );
-		$customer_key_header    = 'Customer-Key: ' . $customer_key;
-		$timestamp_header       = 'Timestamp: ' . $current_time_in_millis;
-		$authorization_header   = 'Authorization: ' . $hash_value;
 		$from_email             = $email;
-		$site_url               = site_url();
-
-		global $user;
-		$user = wp_get_current_user();
 
 		$content = '<div >Hello, </a><br><br><b>Email :</b><a href="mailto:' . $from_email . '" target="_blank">' . $from_email . '</a><br><br><b>Requirements (Usecase) :</b> ' . $message . '</div>';
 

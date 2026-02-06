@@ -26,7 +26,7 @@ require_once plugin_dir_path( __DIR__ ) . 'class-mo-api-authentication-notices-u
  *
  * @package Mo_API_Authentication
  */
-class Mo_API_Authentication_Admin_Notices {
+class Mo_API_Authentication_Admin_Notices { // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedClassFound -- Prefix is already added.
 
 	/**
 	 * Displays the API summary box on the admin dashboard.
@@ -35,7 +35,7 @@ class Mo_API_Authentication_Admin_Notices {
 	 *
 	 * @return void
 	 */
-	public static function display_summary_box() {
+	public static function display_summary_box() { //phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedFunctionFound -- Prefix is not needed since it's inside the class.
 		// Check if the summary box was closed within the last 7 days.
 		$close_time = get_option( 'mo_api_auth_summary_box_close_time', 0 );
 		if ( Mo_API_Authentication_Notices_Utils::if_notice_time_remaining( $close_time, 7, DAY_IN_SECONDS ) ) {

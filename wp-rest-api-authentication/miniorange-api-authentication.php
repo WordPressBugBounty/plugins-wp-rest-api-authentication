@@ -8,10 +8,10 @@
  */
 
 /**
- * Plugin Name:       REST API Authentication for WP - JWT Auth and more
+ * Plugin Name:       JWT Authentication for WP API
  * Plugin URI:        https://wordpress.org/plugins/wp-rest-api-authentication
  * Description:       REST API Authentication for WP secures rest API access for unauthorized users using OAuth 2.0, Basic Auth, JWT, API Key. Also reduces potential attack factors to the respective site.
- * Version:           4.0.0
+ * Version:           4.2.0
  * Author:            miniOrange
  * Author URI:        https://www.miniorange.com
  * License:           Expat
@@ -31,7 +31,7 @@ if ( ! defined( 'WPINC' ) ) {
 /**
  * Currently plugin version.
  */
-define( 'MINIORANGE_API_AUTHENTICATION_VERSION', '4.0.0' );
+define( 'MINIORANGE_API_AUTHENTICATION_VERSION', '4.2.0' );
 
 /**
  * The code that runs during plugin activation.
@@ -39,12 +39,12 @@ define( 'MINIORANGE_API_AUTHENTICATION_VERSION', '4.0.0' );
  *
  * @return void
  */
-function remove_footer_admin() {
+function mo_api_auth_remove_footer_admin() { // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedFunctionFound -- The functino is already prefixed with mo_api_auth_.
 	echo '';
 }
 
 if ( isset( $_GET['page'] ) && sanitize_text_field( wp_unslash( $_GET['page'] ) ) === 'mo_api_authentication_settings' ) { //phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Ignoring nonce validation because we are getting data from URL and not form submission.
-	add_filter( 'admin_footer_text', 'remove_footer_admin' );
+	add_filter( 'admin_footer_text', 'mo_api_auth_remove_footer_admin' );
 }
 
 /**
@@ -52,7 +52,7 @@ if ( isset( $_GET['page'] ) && sanitize_text_field( wp_unslash( $_GET['page'] ) 
  *
  * @return void
  */
-function mo_api_auth_activate_miniorange_api_authentication() {
+function mo_api_auth_activate_miniorange_api_authentication() { //phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedFunctionFound -- The functino is already prefixed with mo_api_auth_.
 	update_option( 'mo_api_auth_summary_box_close_time', 0 );
 	require_once plugin_dir_path( __FILE__ ) . 'includes/class-miniorange-api-authentication-activator.php';
 	Miniorange_Api_Authentication_Activator::activate();
@@ -64,7 +64,7 @@ function mo_api_auth_activate_miniorange_api_authentication() {
  *
  * @return void
  */
-function mo_api_auth_deactivate_miniorange_api_authentication() {
+function mo_api_auth_deactivate_miniorange_api_authentication() { //phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedFunctionFound -- The functino is already prefixed with mo_api_auth_.
 	wp_clear_scheduled_hook( 'mo_api_display_the_popup' );
 	require_once plugin_dir_path( __FILE__ ) . 'includes/class-miniorange-api-authentication-deactivator.php';
 	Miniorange_Api_Authentication_Deactivator::mo_api_authentication_deactivate();
@@ -95,7 +95,7 @@ require plugin_dir_path( __FILE__ ) . 'includes/class-miniorange-api-authenticat
  *
  * @return void
  */
-function mo_api_auth_plugin_settings_style() {
+function mo_api_auth_plugin_settings_style() { //phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedFunctionFound -- The functino is already prefixed with mo_api_auth_.
 	if ( isset( $_GET['page'] ) && 'mo_api_authentication_settings' === $_GET['page'] ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Using this to enqueue styles and script only on the plugin page.
 		wp_enqueue_style( 'mo_api_authentication_admin_settings_style', plugins_url( 'css/style_settings.min.css', __FILE__ ), MINIORANGE_API_AUTHENTICATION_VERSION, array(), false, false );
 		wp_enqueue_style( 'mo_api_authentication_admin_settings_fontAwesome_style', plugins_url( 'css/font-awesome.min.css', __FILE__ ), MINIORANGE_API_AUTHENTICATION_VERSION, array(), false, false );
@@ -107,7 +107,7 @@ function mo_api_auth_plugin_settings_style() {
  *
  * @return void
  */
-function mo_api_authentication_feedback_request() {
+function mo_api_authentication_feedback_request() { //phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedFunctionFound -- The functino is already prefixed with mo_api_auth_.
 	Mo_API_Authentication_Feedback::mo_api_authentication_display_feedback();
 }
 
@@ -116,7 +116,7 @@ function mo_api_authentication_feedback_request() {
  *
  * @return void
  */
-function run_miniorange_api_authentication() {
+function run_miniorange_api_authentication() { //phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedFunctionFound -- The functino is already suffixed with miniorange_api_authentication.
 
 	$plugin = new Miniorange_Api_Authentication();
 	$plugin->run();
@@ -128,7 +128,7 @@ run_miniorange_api_authentication();
  *
  * @return integer
  */
-function mo_api_authentication_is_customer_registered() {
+function mo_api_authentication_is_customer_registered() { //phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedFunctionFound -- The functino is already prefixed with mo_api_authentication_.
 	$email        = get_option( 'mo_api_authentication_admin_email' );
 	$customer_key = get_option( 'mo_api_authentication_admin_customer_key' );
 	if ( ! $email || ! $customer_key || ! is_numeric( trim( $customer_key ) ) ) {
@@ -144,7 +144,7 @@ function mo_api_authentication_is_customer_registered() {
  *
  * @return void
  */
-function mo_api_auth_success_message() {
+function mo_api_auth_success_message() { //phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedFunctionFound -- The functino is already prefixed with mo_api_auth_.
 	$class   = 'error';
 	$message = get_option( 'mo_api_auth_message' );
 	echo "<div class='" . esc_html( $class ) . "'> <p>" . esc_html( $message ) . '</p></div>';
@@ -155,7 +155,7 @@ function mo_api_auth_success_message() {
  *
  * @return void
  */
-function mo_api_auth_error_message() {
+function mo_api_auth_error_message() { //phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedFunctionFound -- The functino is already prefixed with mo_api_auth_.	
 	$class   = 'updated';
 	$message = get_option( 'mo_api_auth_message' );
 	echo "<div class='" . esc_attr( $class ) . "'><p>" . esc_html( $message ) . '</p></div>';
@@ -166,7 +166,7 @@ function mo_api_auth_error_message() {
  *
  * @return void
  */
-function mo_api_auth_show_success_message() {
+function mo_api_auth_show_success_message() { //phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedFunctionFound -- The functino is already prefixed with mo_api_auth_.
 	remove_action( 'admin_notices', 'mo_api_auth_success_message' );
 	add_action( 'admin_notices', 'mo_api_auth_error_message' );
 }
@@ -176,7 +176,7 @@ function mo_api_auth_show_success_message() {
  *
  * @return void
  */
-function mo_api_auth_show_error_message() {
+function mo_api_auth_show_error_message() { //phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedFunctionFound -- The functino is already prefixed with mo_api_auth_.
 	remove_action( 'admin_notices', 'mo_api_auth_error_message' );
 	add_action( 'admin_notices', 'mo_api_auth_success_message' );
 }
@@ -186,7 +186,7 @@ function mo_api_auth_show_error_message() {
  *
  * @return void
  */
-function mo_initialize_jwt_settings() {
+function mo_initialize_jwt_settings() { //phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedFunctionFound -- The functino is already prefixed with mo_.
 	if ( empty( get_option( 'mo_api_authentication_jwt_client_secret' ) ) && empty( get_option( 'mo_api_authentication_jwt_signing_algorithm' ) ) ) {
 		update_option( 'mo_api_authentication_jwt_client_secret', stripslashes( wp_generate_password( 32, false, false ) ) );
 		update_option( 'mo_api_authentication_jwt_signing_algorithm', 'HS256' );
@@ -196,7 +196,7 @@ function mo_initialize_jwt_settings() {
 /**
  * Ajax handler to store the close time in the database.
  */
-function mo_api_auth_close_admin_notices() {
+function mo_api_auth_close_admin_notices() { //phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedFunctionFound -- The functino is already prefixed with mo_api_auth_.
 	if ( check_ajax_referer( 'mo_api_auth_summary_box_close_button_nonce', 'nonce', false ) && current_user_can( 'manage_options' ) ) {
 		update_option( 'mo_api_auth_summary_box_close_time', time() );
 		wp_send_json_success();

@@ -153,11 +153,8 @@ class Miniorange_Api_Authentication {
 	 */
 	private function load_constants() {
 		$constants_file = plugin_dir_path( __FILE__ ) . '../admin/partials/utils/class-mo-api-authentication-constants.php';
-
 		if ( file_exists( $constants_file ) ) {
 			require_once $constants_file;
-		} else {
-			error_log( 'Constants file not found: ' . $constants_file );
 		}
 	}
 
