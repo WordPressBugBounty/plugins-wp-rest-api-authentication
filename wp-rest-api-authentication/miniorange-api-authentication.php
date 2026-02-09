@@ -8,10 +8,10 @@
  */
 
 /**
- * Plugin Name:       JWT Authentication for WP API
+ * Plugin Name:       JWT Authentication for WP REST APIs
  * Plugin URI:        https://wordpress.org/plugins/wp-rest-api-authentication
  * Description:       REST API Authentication for WP secures rest API access for unauthorized users using OAuth 2.0, Basic Auth, JWT, API Key. Also reduces potential attack factors to the respective site.
- * Version:           4.2.0
+ * Version:           4.3.0
  * Author:            miniOrange
  * Author URI:        https://www.miniorange.com
  * License:           Expat
@@ -31,7 +31,7 @@ if ( ! defined( 'WPINC' ) ) {
 /**
  * Currently plugin version.
  */
-define( 'MINIORANGE_API_AUTHENTICATION_VERSION', '4.2.0' );
+define( 'MINIORANGE_API_AUTHENTICATION_VERSION', '4.3.0' );
 
 /**
  * The code that runs during plugin activation.

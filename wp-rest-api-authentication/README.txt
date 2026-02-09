@@ -1,9 +1,9 @@
-=== JWT Authentication for WP API ===
+=== JWT Authentication for WP REST APIs ===
 Contributors: miniOrange
 Tags: rest-api, api key, jwt authentication, REST, secure api, token, endpoints, json web token, oauth,
 Requires at least: 3.0.1
 Tested up to: 6.9
-Stable tag: 4.2.0
+Stable tag: 4.3.0
 Requires PHP: 5.6
 License: Expat
 License URI: https://plugins.miniorange.com/mit-license
@@ -12,7 +12,7 @@ Secure and protect WordPress REST API from unauthorized access using JWT token, 
 
 
 == Description ==
-**WordPress REST API endpoints** are **open and unsecured by default** which can be used to access your site data. Secure WordPress APIs from unauthorized users with our **[JWT Authentication for WP API plugin](https://plugins.miniorange.com/wordpress-rest-api-authentication)**.  
+**WordPress REST API endpoints** are **open and unsecured by default** which can be used to access your site data. Secure WordPress APIs from unauthorized users with our **[JWT Authentication for WP REST APIs plugin](https://plugins.miniorange.com/wordpress-rest-api-authentication)**.  
 
 Our plugin offers below authentication methods to **Protect WP REST API endpoints**:
 - [JWT Authentication](https://plugins.miniorange.com/wordpress-rest-api-jwt-authentication-method)
@@ -64,7 +64,7 @@ You can also disable the WP REST APIs with our plugin such that no one can make 
 - Enables admin-triggered logouts or session control.
 - Useful for complying with stricter session policies.
 
-With this plugin, the user is allowed to access your site's resources only after successful WP REST API authentication. JWT Authentication for WP API plugin will make your **WordPress endpoints secure from unauthorized access.**
+With this plugin, the user is allowed to access your site's resources only after successful WP REST API authentication. JWT Authentication for WP REST APIs plugin will make your **WordPress endpoints secure from unauthorized access.**
 
 == Plugin Feature List ==
  ## FREE PLAN
@@ -94,19 +94,19 @@ With this plugin, the user is allowed to access your site's resources only after
 
 == Installation ==
  
-This section describes how to install the JWT Authentication for WP API plugin and get it working.
+This section describes how to install the JWT Authentication for WP REST APIs plugin and get it working.
  
 = From your WordPress dashboard =
  
 1. Visit `Plugins > Add New`
-2. Search for `JWT Authentication for WP API `. Find and Install the `JWT Authentication for WP API` plugin by miniOrange
+2. Search for `JWT Authentication for WP REST APIs `. Find and Install the `JWT Authentication for WP REST APIs` plugin by miniOrange
 3. Activate the plugin
  
 = From WordPress.org =
  
-1. Download JWT Authentication for WP API .
+1. Download JWT Authentication for WP REST APIs .
 2. Unzip and upload the `wp-rest-api-authentication` directory to your `/wp-content/plugins/` directory.
-3. Activate JWT Authentication for WP API from your Plugins page.
+3. Activate JWT Authentication for WP REST APIs from your Plugins page.
  
  
 == Privacy ==
@@ -115,13 +115,13 @@ This plugin does not store any user data.
 
 == Frequently Asked Questions ==
 
-= What is the use of JWT Authentication for WP API  =
-    JWT Authentication for WP API plugin prevents unauthorized access to your WordPress APIs. It reduces potential attack by securing the WP APIs.
+= What is the use of JWT Authentication for WP REST APIs  =
+    JWT Authentication for WP REST APIs plugin prevents unauthorized access to your WordPress APIs. It reduces potential attack by securing the WP APIs.
 	
 = How can I authenticate the REST APIs using this plugin? =
 	This plugin supports 5 methods: i) JWT Token based authentication, ii) authentication through user credentials passed as an encrypted token, iii) API Key authentication, iv) OAuth 2.0 Authentication protocol and v) authentication via JWT token obtained from the external OAuth/OpenId providers which include Google, Facebook, Azure, AWS Cognito, Apple etc and also from Firebase. 
 
-= How does the JWT Authentication for WP API plugin work? =
+= How does the JWT Authentication for WP REST APIs plugin work? =
 	You just have to select your WP REST API Authentication Method in the plugin.
 	Based on the method you have selected, you will get the authorization code/token after sending the token request.
 	Access your REST API with the code/token you received in the previous step. 
@@ -165,6 +165,9 @@ This plugin does not store any user data.
 8. API Access Auditing analytics
 
 == Changelog ==
+
+= 4.3.0 =
+* Bug fixes.
 
 = 4.2.0 =
 * Bug fixes.

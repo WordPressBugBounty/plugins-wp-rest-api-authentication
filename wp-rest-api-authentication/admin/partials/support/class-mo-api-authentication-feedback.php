@@ -143,7 +143,7 @@ class Mo_API_Authentication_Feedback {
 				var mo_skip_details = document.getElementById('mo_api_skip_details');
 				var mo_skip_feedback = document.getElementById('mo_skip_feedback');
 
-				jQuery('a[aria-label="Deactivate JWT Authentication for WP API"]').click(function () {
+				jQuery('a[aria-label="Deactivate JWT Authentication for WP REST APIs"]').click(function () {
 					mo_api_details_modal.style.display = "block";
 					return false;
 				});
