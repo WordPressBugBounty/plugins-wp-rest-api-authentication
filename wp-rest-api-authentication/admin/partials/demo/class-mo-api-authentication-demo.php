@@ -161,31 +161,31 @@ class Mo_API_Authentication_Demo {
 							</div>
 							<div class="col">
 								<div class="form-check d-flex align-items-center">
-									<input class="form-check-input" type="checkbox" name="mo_api_authentication_demo_basic_auth">
+									<input class="form-check-input" type="checkbox" id="mo_api_authentication_demo_basic_auth" name="mo_api_authentication_demo_basic_auth">
 									<label class="form-check-label mo_rest_api_primary_font" for="mo_api_authentication_demo_basic_auth">
 										Basic Authentication
 									</label>
 								</div>
 								<div class="form-check d-flex align-items-center">
-									<input class="form-check-input" type="checkbox" name="mo_api_authentication_demo_jwt_auth">
+									<input class="form-check-input" type="checkbox" id="mo_api_authentication_demo_jwt_auth" name="mo_api_authentication_demo_jwt_auth">
 									<label class="form-check-label mo_rest_api_primary_font" for="mo_api_authentication_demo_jwt_auth">
 										JWT Authentication
 									</label>
 								</div>
 								<div class="form-check d-flex align-items-center">
-									<input class="form-check-input" type="checkbox" name="mo_api_authentication_demo_apikey_auth">
+									<input class="form-check-input" type="checkbox" id="mo_api_authentication_demo_apikey_auth" name="mo_api_authentication_demo_apikey_auth">
 									<label class="form-check-label mo_rest_api_primary_font" for="mo_api_authentication_demo_apikey_auth">
 										API Key Authentication
 									</label>
 								</div>
 								<div class="form-check d-flex align-items-center">
-									<input class="form-check-input" type="checkbox" name="mo_api_authentication_demo_oauth_auth">
+									<input class="form-check-input" type="checkbox" id="mo_api_authentication_demo_oauth_auth" name="mo_api_authentication_demo_oauth_auth">
 									<label class="form-check-label mo_rest_api_primary_font" for="mo_api_authentication_demo_oauth_auth">
 										OAuth 2.0 Authentication
 									</label>
 								</div>
 								<div class="form-check d-flex align-items-center">
-									<input class="form-check-input" type="checkbox" name="mo_api_authentication_demo_thirdparty_auth">
+									<input class="form-check-input" type="checkbox" id="mo_api_authentication_demo_thirdparty_auth" name="mo_api_authentication_demo_thirdparty_auth">
 									<label class="form-check-label mo_rest_api_primary_font" for="mo_api_authentication_demo_thirdparty_auth">
 										Third Party Authentication
 									</label>
@@ -202,13 +202,13 @@ class Mo_API_Authentication_Demo {
 							</div>
 							<div class="col">
 								<div class="form-check d-flex align-items-center">
-									<input class="form-check-input" type="checkbox" name="mo_api_authentication_demo_endpoints_wp_rest_api">
+									<input class="form-check-input" type="checkbox" id="mo_api_authentication_demo_endpoints_wp_rest_api" name="mo_api_authentication_demo_endpoints_wp_rest_api">
 									<label class="form-check-label mo_rest_api_primary_font" for="mo_api_authentication_demo_endpoints_wp_rest_api">
 										WP REST API
 									</label>
 								</div>
 								<div class="form-check d-flex align-items-center">
-									<input class="form-check-input" type="checkbox" name="mo_api_authentication_demo_endpoints_custom_api">
+									<input class="form-check-input" type="checkbox" id="mo_api_authentication_demo_endpoints_custom_api" name="mo_api_authentication_demo_endpoints_custom_api">
 									<label class="form-check-label mo_rest_api_primary_font" for="mo_api_authentication_demo_endpoints_custom_api">
 										WP Third Party/Custom APIs
 									</label>
