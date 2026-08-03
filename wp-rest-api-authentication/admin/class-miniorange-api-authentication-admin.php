@@ -19,6 +19,7 @@ require 'partials/class-mo-api-authentication-admin-menu.php';
 require 'partials/flow/mo-api-authentication-flow.php';
 require 'partials/flow/mo-token-api-flow.php';
 require 'partials/support/class-mo-api-authentication-feedback.php';
+require 'partials/utils/class-mo-api-authentication-oauth-methods.php';
 
 /**
  * Handle Admin actions
@@ -338,6 +339,32 @@ class Miniorange_API_Authentication_Admin {
 				'permission_callback' => '__return_true',
 			)
 		);
+		register_rest_route(
+			'api/v1',
+			'oauth-methods',
+			array(
+				'methods'             => 'GET',
+				'callback'            => array( $this, 'mo_rest_get_configured_oauth_methods' ),
+				'permission_callback' => '__return_true',
+			)
+		);
+	}
+
+	/**
+	 * REST callback to return configured OAuth authentication methods.
+	 *
+	 * @return WP_REST_Response
+	 */
+	public function mo_rest_get_configured_oauth_methods() {
+		if ( ! mo_api_auth_check_rate_limit() ) {
+			Mo_API_Authentication_Utils::send_rate_limit_exceeded_response();
+		}
+
+		mo_api_auth_increment_rate_limit();
+
+		Mo_API_Authentication_Utils::increment_success_counter( Mo_API_Authentication_Constants::OPEN_API );
+
+		return rest_ensure_response( mo_api_authentication_get_configured_oauth_methods() );
 	}
 
 	/**
@@ -351,6 +378,8 @@ class Miniorange_API_Authentication_Admin {
 		if ( ! mo_api_auth_check_rate_limit() ) {
 			Mo_API_Authentication_Utils::send_rate_limit_exceeded_response();
 		}
+
+		mo_api_auth_increment_rate_limit();
 
 		$json     = $request_body->get_params();
 		$username = isset( $json['username'] ) ? sanitize_user( $json['username'] ) : false;
@@ -392,6 +421,17 @@ class Miniorange_API_Authentication_Admin {
 	}
 
 	/**
+	 * Keep default-unprotected routes (e.g. /wp-abilities/v1) out of the protected whitelist.
+	 *
+	 * @return void
+	 */
+	public function migrate_default_unprotected_rest_routes() {
+		if ( function_exists( 'mo_api_authentication_migrate_default_unprotected_routes' ) ) {
+			mo_api_authentication_migrate_default_unprotected_routes();
+		}
+	}
+
+	/**
 	 * This function adds newly registered REST routes to protected routes list.
 	 */
 	public static function protect_newly_added_rest_routes() {
@@ -403,6 +443,17 @@ class Miniorange_API_Authentication_Admin {
 
 		$new_added_routes = array_map( 'esc_html', array_diff( $all_routes, $protected_routes ) );
 		$new_added_routes = array_diff( $new_added_routes, $unsecured_routes );
+
+		if ( function_exists( 'mo_api_authentication_is_default_unprotected_route' ) ) {
+			$new_added_routes = array_values(
+				array_filter(
+					$new_added_routes,
+					function ( $route ) {
+						return ! mo_api_authentication_is_default_unprotected_route( $route );
+					}
+				)
+			);
+		}
 
 		if ( ! empty( $unsecured_routes ) && count( $new_added_routes ) >= 0 ) {
 
@@ -424,6 +475,8 @@ class Miniorange_API_Authentication_Admin {
 		if ( ! mo_api_auth_check_rate_limit() ) {
 			Mo_API_Authentication_Utils::send_rate_limit_exceeded_response();
 		}
+
+		mo_api_auth_increment_rate_limit();
 
 		$headerkey = mo_api_auth_getallheaders();
 		$headerkey = array_change_key_case( $headerkey, CASE_UPPER );

@@ -76,6 +76,7 @@ class Miniorange_Api_Authentication {
 		$this->load_dependencies();
 		$this->set_locale();
 		$this->define_admin_hooks();
+		$this->define_abilities_hooks();
 
 		if ( $mo_rest_old_version < MINIORANGE_API_AUTHENTICATION_VERSION ) {
 			update_option( 'mo_api_authentication_old_plugin_version', $mo_rest_old_version );
@@ -130,6 +131,8 @@ class Miniorange_Api_Authentication {
 		$this->loader = new Miniorange_Api_Authentication_Loader();
 
 		require_once plugin_dir_path( __DIR__ ) . 'includes/class-miniorange-api-authentication-cron-manager.php';
+
+		require_once plugin_dir_path( __DIR__ ) . 'includes/class-mo-api-authentication-abilities.php';
 	}
 
 	/**
@@ -173,13 +176,26 @@ class Miniorange_Api_Authentication {
 		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_scripts' );
 		$this->loader->add_action( 'admin_menu', $plugin_admin, 'mo_api_authentication_config_settings' );
 		$this->loader->add_action( 'admin_menu', $plugin_admin, 'mo_api_auth_admin_menu' );
+		$this->loader->add_action( 'rest_api_init', $plugin_admin, 'migrate_default_unprotected_rest_routes', 1 );
 		$this->loader->add_action( 'rest_api_init', $plugin_admin, 'register_rest_routes' );
-		$this->loader->add_action( 'rest_api_init', $plugin_admin, 'mo_api_auth_initialize_api_flow' );
+		$this->loader->add_action( 'rest_api_init', $plugin_admin, 'mo_api_auth_initialize_api_flow', 20 );
 		$this->loader->add_action( 'wp_ajax_save_temporary_data', $plugin_admin, 'save_temporary_data' );
 		$this->loader->add_action( 'admin_notices', $plugin_admin, 'include_notice_class' );
 		$this->loader->add_action( 'wp_ajax_install_and_activate_caw_free', new Mo_API_Authentication_Utils(), 'install_and_activate_caw_free' );
 		$this->loader->add_action( 'wp_ajax_install_and_activate_wcps_free', new Mo_API_Authentication_Utils(), 'install_and_activate_wcps_free' );
 		$cron_manager = new Miniorange_Api_Authentication_Cron_Manager();
+	}
+
+	/**
+	 * Register WordPress Abilities API hooks (WP 6.9+).
+	 *
+	 * @access private
+	 * @return void
+	 */
+	private function define_abilities_hooks() {
+		$abilities = new Mo_API_Authentication_Abilities();
+		$this->loader->add_action( 'wp_abilities_api_categories_init', $abilities, 'register_categories' );
+		$this->loader->add_action( 'wp_abilities_api_init', $abilities, 'register_abilities' );
 	}
 
 	/**

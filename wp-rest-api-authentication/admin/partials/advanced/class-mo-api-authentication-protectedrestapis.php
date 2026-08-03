@@ -19,6 +19,59 @@ if ( ! defined( 'ABSPATH' ) ) {
 class Mo_API_Authentication_ProtectedRestAPIs {
 
 	/**
+	 * Generate a stable DOM id for a REST route checkbox.
+	 *
+	 * @param string $route REST route.
+	 * @return string
+	 */
+	private static function rest_route_checkbox_id( $route ) {
+		return 'mo-rest-route-' . md5( $route );
+	}
+
+	/**
+	 * Generate a stable DOM id for a namespace "select all" checkbox.
+	 *
+	 * @param string $namespace REST namespace.
+	 * @return string
+	 */
+	private static function namespace_select_all_id( $namespace ) {
+		return 'mo-rest-api-select-all-' . md5( $namespace );
+	}
+
+	/**
+	 * Whether a REST namespace belongs to WordPress core (not a third-party plugin).
+	 *
+	 * @param string $namespace REST namespace (e.g. wp/v2, wp-abilities/v1).
+	 * @return bool
+	 */
+	public static function is_wordpress_core_namespace( $namespace ) {
+		return 0 === strpos( $namespace, 'wp/' ) || 0 === strpos( $namespace, 'wp-' );
+	}
+
+	/**
+	 * Human-readable label for a WordPress core REST namespace accordion.
+	 *
+	 * @param string $namespace REST namespace.
+	 * @return string
+	 */
+	private static function get_wordpress_core_namespace_label( $namespace ) {
+		$labels = array(
+			'wp/v2'             => 'WordPress',
+			'wp-abilities/v1'   => 'WordPress Abilities',
+		);
+
+		/**
+		 * Filter the display label for a WordPress core REST API namespace in the Protected REST APIs UI.
+		 *
+		 * @param string $label     Default label.
+		 * @param string $namespace REST namespace.
+		 */
+		$label = apply_filters( 'mo_api_authentication_wordpress_core_namespace_label', $labels[ $namespace ] ?? $namespace, $namespace );
+
+		return $label;
+	}
+
+	/**
 	 * Internal redirect to display protected REST API endpoints.
 	 *
 	 * @return void
@@ -124,43 +177,55 @@ class Mo_API_Authentication_ProtectedRestAPIs {
 		}
 		$blocked_routes = is_array( get_option( 'mo_api_authentication_protectedrestapi_route_whitelist' ) ) ? get_option( 'mo_api_authentication_protectedrestapi_route_whitelist' ) : array();
 		$blocked_routes = array_map( 'esc_html', $blocked_routes );
+
+		$core_namespaces = array();
+		foreach ( array_keys( $all_namespaces ) as $namespace ) {
+			if ( self::is_wordpress_core_namespace( $namespace ) ) {
+				$core_namespaces[] = $namespace;
+			}
+		}
+		sort( $core_namespaces );
 		?>
 			<div class="accordion" id="mo-rest-api-protected-api">
-				<?php if ( array_key_exists( 'wp/v2', $all_namespaces ) ) : ?>
+				<?php foreach ( $core_namespaces as $namespace ) : ?>
+					<?php
+					$accordion_suffix = str_replace( '/', '-', $namespace );
+					$routes           = array_keys( $wp_rest_server->get_routes( $namespace ) );
+					$routes           = array_map( 'esc_attr', $routes );
+					?>
 					<div class="accordion-item">
-						<h2 class="accordion-header" id="mo-rest-api-protected-api-accordion-wp-v2">
-							<button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#mo-rest-api-accordion-control-route-wp-v2" aria-expanded="false" aria-controls="mo-rest-api-accordion-control-route-wp-v2">
+						<h2 class="accordion-header" id="mo-rest-api-protected-api-accordion-<?php echo esc_attr( $accordion_suffix ); ?>">
+							<button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#mo-rest-api-accordion-control-route-<?php echo esc_attr( $accordion_suffix ); ?>" aria-expanded="false" aria-controls="mo-rest-api-accordion-control-route-<?php echo esc_attr( $accordion_suffix ); ?>">
 								<img src="<?php echo esc_url( plugin_dir_url( __FILE__ ) ) . '../../images/wordpress-logo.png'; ?>" width="30px">
-								<span class="ms-2">WordPress</span>
+								<span class="ms-2"><?php echo esc_html( self::get_wordpress_core_namespace_label( $namespace ) ); ?></span>
 							</button>
 						</h2>
-						<div id="mo-rest-api-accordion-control-route-wp-v2" class="accordion-collapse collapse" aria-labelledby="mo-rest-api-protected-api-accordion-wp-v2" data-bs-parent="#mo-rest-api-protected-api">
-							<div class="accordion-body" id="mo-caw-accordion-body-protected-apis-wp-v2">
-								<?php
-									$routes = array_keys( $wp_rest_server->get_routes( 'wp/v2' ) );
-									$routes = array_map( 'esc_attr', $routes );
-								?>
+						<div id="mo-rest-api-accordion-control-route-<?php echo esc_attr( $accordion_suffix ); ?>" class="accordion-collapse collapse" aria-labelledby="mo-rest-api-protected-api-accordion-<?php echo esc_attr( $accordion_suffix ); ?>" data-bs-parent="#mo-rest-api-protected-api">
+							<div class="accordion-body" id="mo-caw-accordion-body-protected-apis-<?php echo esc_attr( $accordion_suffix ); ?>">
 								<?php if ( count( $routes ) > 0 ) : ?>
 									<?php foreach ( $routes as $index => $route ) : ?>
 										<?php unset( $complete_routes[ html_entity_decode( $route ) ] ); ?>
 										<?php if ( 0 === $index ) : ?>
 											<?php unset( $routes[0] ); ?>
 											<div class="form-check d-flex align-items-center my-2">
-												<input class="form-check-input" type="checkbox" id="mo-rest-api-select-all-wp/v2" name="" onchange="moRESTAPIselectAll(this,'wp/v2')" <?php echo count( array_intersect( $blocked_routes, $routes ) ) === count( $routes ) ? 'checked' : ''; ?>>
-												<label class="form-check-label" for="mo-rest-api-select-all-wp/v2"><?php echo esc_attr( $route ); ?></label>
+												<input class="form-check-input" type="checkbox" id="<?php echo esc_attr( self::namespace_select_all_id( $namespace ) ); ?>" name="" onchange="moRESTAPIselectAll(this,'<?php echo esc_attr( $namespace ); ?>')" <?php echo count( array_intersect( $blocked_routes, $routes ) ) === count( $routes ) ? 'checked' : ''; ?>>
+												<label class="form-check-label" for="<?php echo esc_attr( self::namespace_select_all_id( $namespace ) ); ?>"><?php echo esc_attr( $route ); ?></label>
 											</div>
 										<?php else : ?>
 											<div class="form-check d-flex align-items-center my-2 ms-3">
-												<input class="form-check-input mo-rest-api-select-all-wp/v2" type="checkbox" value="<?php echo esc_attr( $route ); ?>" id="<?php echo esc_attr( $route ); ?>" name="mo_rest_routes[]" <?php echo ! empty( $blocked_routes ) && in_array( esc_attr( $route ), $blocked_routes, true ) ? 'checked' : ''; ?>>
-												<label class="form-check-label" for="<?php echo esc_attr( $route ); ?>"><?php echo esc_attr( $route ); ?></label>
+												<input class="form-check-input mo-rest-api-select-all-<?php echo esc_attr( $namespace ); ?>" type="checkbox" value="<?php echo esc_attr( $route ); ?>" id="<?php echo esc_attr( self::rest_route_checkbox_id( $route ) ); ?>" name="mo_rest_routes[]" <?php echo ! empty( $blocked_routes ) && in_array( esc_attr( $route ), $blocked_routes, true ) ? 'checked' : ''; ?>>
+												<label class="form-check-label" for="<?php echo esc_attr( self::rest_route_checkbox_id( $route ) ); ?>"><?php echo esc_attr( $route ); ?></label>
 											</div>
 										<?php endif; ?>
 									<?php endforeach; ?>
+								<?php else : ?>
+									<p class="fs-6 mb-0">No APIs Available.</p>
 								<?php endif; ?>
 							</div>
 						</div>
 					</div>
-				<?php endif; ?>
+					<?php unset( $all_namespaces[ $namespace ] ); ?>
+				<?php endforeach; ?>
 			</div>
 			<script>
 				function moRESTAPIselectAll(selectAll, namespace) {
@@ -171,7 +236,6 @@ class Mo_API_Authentication_ProtectedRestAPIs {
 				}
 			</script>
 		<?php
-		unset( $all_namespaces['wp/v2'] );
 	}
 
 	/**
@@ -236,6 +300,9 @@ class Mo_API_Authentication_ProtectedRestAPIs {
 					<div id="mo-rest-api-accordion-control-route-other-apis" class="accordion-collapse collapse" aria-labelledby="mo-rest-api-protected-api-accordion-other-apis" data-bs-parent="#mo-rest-api-unprotected-api">
 						<div class="accordion-body" id="mo-caw-accordion-body-protected-apis-other-apis">
 						<?php foreach ( $all_namespaces as $namespace => $index ) : ?>
+							<?php if ( self::is_wordpress_core_namespace( $namespace ) ) : ?>
+								<?php continue; ?>
+							<?php endif; ?>
 							<?php
 								$routes = array_keys( $wp_rest_server->get_routes( $namespace ) );
 								$routes = array_map( 'esc_attr', $routes );
@@ -246,13 +313,13 @@ class Mo_API_Authentication_ProtectedRestAPIs {
 										<?php if ( 0 === $index ) : ?>
 											<?php unset( $routes[0] ); ?>
 											<div class="form-check d-flex align-items-center my-2">
-												<input class="form-check-input" type="checkbox" id="mo-rest-api-select-all-<?php echo esc_attr( $namespace ); ?>" name="" onchange="moRESTAPIselectAll(this,'<?php echo esc_attr( $namespace ); ?>')" <?php echo count( array_intersect( $blocked_routes, $routes ) ) === count( $routes ) ? 'checked' : ''; ?>>
-												<label class="form-check-label" for="mo-rest-api-select-all-<?php echo esc_attr( $namespace ); ?>"><?php echo esc_attr( $route ); ?></label>
+												<input class="form-check-input" type="checkbox" id="<?php echo esc_attr( self::namespace_select_all_id( $namespace ) ); ?>" name="" onchange="moRESTAPIselectAll(this,'<?php echo esc_attr( $namespace ); ?>')" <?php echo count( array_intersect( $blocked_routes, $routes ) ) === count( $routes ) ? 'checked' : ''; ?>>
+												<label class="form-check-label" for="<?php echo esc_attr( self::namespace_select_all_id( $namespace ) ); ?>"><?php echo esc_attr( $route ); ?></label>
 											</div>
 										<?php else : ?>
 											<div class="form-check d-flex align-items-center my-2 ms-3">
-												<input class="form-check-input mo-rest-api-select-all-<?php echo esc_attr( $namespace ); ?>" type="checkbox" name="mo_rest_routes[]" value="<?php echo esc_attr( $route ); ?>" id="<?php echo esc_attr( $route ); ?>" <?php echo ! empty( $blocked_routes ) && in_array( esc_attr( $route ), $blocked_routes, true ) ? 'checked' : ''; ?>>
-												<label class="form-check-label" for="<?php echo esc_attr( $route ); ?>"><?php echo esc_attr( $route ); ?></label>
+												<input class="form-check-input mo-rest-api-select-all-<?php echo esc_attr( $namespace ); ?>" type="checkbox" name="mo_rest_routes[]" value="<?php echo esc_attr( $route ); ?>" id="<?php echo esc_attr( self::rest_route_checkbox_id( $route ) ); ?>" <?php echo ! empty( $blocked_routes ) && in_array( esc_attr( $route ), $blocked_routes, true ) ? 'checked' : ''; ?>>
+												<label class="form-check-label" for="<?php echo esc_attr( self::rest_route_checkbox_id( $route ) ); ?>"><?php echo esc_attr( $route ); ?></label>
 											</div>
 										<?php endif; ?>
 									<?php endforeach; ?>
@@ -275,8 +342,8 @@ class Mo_API_Authentication_ProtectedRestAPIs {
 							?>
 							<?php foreach ( $complete_routes as $index => $route ) : ?>
 								<div class="form-check d-flex align-items-center my-2 ms-3">
-									<input class="form-check-input mo-rest-api-select-all-<?php echo esc_attr( $namespace ); ?>" type="checkbox" name="mo_rest_routes[]" value="<?php echo esc_attr( $route ); ?>" id="<?php echo esc_attr( $route ); ?>" <?php echo ! empty( $blocked_routes ) && in_array( esc_attr( $route ), $blocked_routes, true ) ? 'checked' : ''; ?>>
-									<label class="form-check-label" for="<?php echo esc_attr( $route ); ?>"><?php echo esc_attr( $route ); ?></label>
+									<input class="form-check-input" type="checkbox" name="mo_rest_routes[]" value="<?php echo esc_attr( $route ); ?>" id="<?php echo esc_attr( self::rest_route_checkbox_id( $route ) ); ?>" <?php echo ! empty( $blocked_routes ) && in_array( esc_attr( $route ), $blocked_routes, true ) ? 'checked' : ''; ?>>
+									<label class="form-check-label" for="<?php echo esc_attr( self::rest_route_checkbox_id( $route ) ); ?>"><?php echo esc_attr( $route ); ?></label>
 								</div>
 							<?php endforeach; ?>
 						</div>
@@ -293,11 +360,17 @@ class Mo_API_Authentication_ProtectedRestAPIs {
 	 * @return bool
 	 */
 	public static function check_route_is_wp_standard_or_not( $route ) {
-		if ( stripos( $route, '/wp/v2' ) === false ) {
-			return false;
-		} else {
-			return true;
-		}
+		return 0 === strpos( $route, '/wp/' ) || 0 === strpos( $route, '/wp-' );
+	}
+
+	/**
+	 * Whether a request URI targets a WordPress core REST API namespace.
+	 *
+	 * @param string $request_uri Request URI or path (may include /wp-json prefix).
+	 * @return bool
+	 */
+	public static function request_uri_is_wordpress_core_rest_api( $request_uri ) {
+		return (bool) preg_match( '#/(wp/v\d+|wp-[^/]+/v\d+)#i', $request_uri );
 	}
 
 
@@ -345,13 +418,13 @@ class Mo_API_Authentication_ProtectedRestAPIs {
 						<?php if ( 0 === $index ) : ?>
 							<?php unset( $routes[0] ); ?>
 							<div class="form-check d-flex align-items-center my-2">
-								<input class="form-check-input" type="checkbox" id="mo-rest-api-select-all-<?php echo esc_html( $namespace ); ?>" name="" onchange="moRESTAPIselectAll(this,'<?php echo esc_html( $namespace ); ?>')" <?php echo count( array_intersect( $blocked_routes, $routes ) ) === count( $routes ) ? 'checked' : ''; ?>>
-								<label class="form-check-label" for="mo-rest-api-select-all-<?php echo esc_html( $namespace ); ?>"><?php echo esc_html( $route ); ?></label>
+								<input class="form-check-input" type="checkbox" id="<?php echo esc_attr( self::namespace_select_all_id( $namespace ) ); ?>" name="" onchange="moRESTAPIselectAll(this,'<?php echo esc_attr( $namespace ); ?>')" <?php echo count( array_intersect( $blocked_routes, $routes ) ) === count( $routes ) ? 'checked' : ''; ?>>
+								<label class="form-check-label" for="<?php echo esc_attr( self::namespace_select_all_id( $namespace ) ); ?>"><?php echo esc_html( $route ); ?></label>
 							</div>
 						<?php else : ?>
 							<div class="form-check d-flex align-items-center my-2 ms-3">
-								<input class="form-check-input mo-rest-api-select-all-<?php echo esc_html( $namespace ); ?>" type="checkbox" name="mo_rest_routes[]" value="<?php echo esc_html( $route ); ?>" id="<?php echo esc_html( $route ); ?>" <?php echo ! empty( $blocked_routes ) && in_array( esc_html( $route ), $blocked_routes, true ) ? 'checked' : ''; ?>>
-								<label class="form-check-label" for="<?php echo esc_html( $route ); ?>"><?php echo esc_html( $route ); ?></label>
+								<input class="form-check-input mo-rest-api-select-all-<?php echo esc_attr( $namespace ); ?>" type="checkbox" name="mo_rest_routes[]" value="<?php echo esc_attr( $route ); ?>" id="<?php echo esc_attr( self::rest_route_checkbox_id( $route ) ); ?>" <?php echo ! empty( $blocked_routes ) && in_array( esc_attr( $route ), $blocked_routes, true ) ? 'checked' : ''; ?>>
+								<label class="form-check-label" for="<?php echo esc_attr( self::rest_route_checkbox_id( $route ) ); ?>"><?php echo esc_html( $route ); ?></label>
 							</div>
 						<?php endif; ?>
 						<?php

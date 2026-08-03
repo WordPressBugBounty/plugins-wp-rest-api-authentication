@@ -91,27 +91,105 @@ function mo_api_authentication_config_app_settings() { // phpcs:ignore WordPress
 }
 
 /**
+ * Whether a REST route should stay publicly accessible (not plugin-protected).
+ *
+ * Only /api/v1 and /wp-abilities/v1 namespaces are left open by default.
+ *
+ * @param string $route REST route pattern.
+ * @return bool
+ */
+function mo_api_authentication_is_default_unprotected_route( $route ) { // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedFunctionFound -- The function is already prefixed with mo_api_authentication_.
+	$route = untrailingslashit( (string) $route );
+
+	if ( 0 === strpos( $route, '/wp-abilities/v1' ) ) {
+		return true;
+	}
+
+	if ( '/api/v1' === $route || 0 === strpos( $route, '/api/v1/' ) ) {
+		return true;
+	}
+
+	return false;
+}
+
+/**
+ * Sync protected / unprotected REST route options.
+ *
+ * Default: every route is protected except /api/v1 and /wp-abilities/v1.
+ * When the protected list is empty (broken state), rebuild it from all registered routes.
+ *
+ * @return void
+ */
+function mo_api_authentication_sync_rest_route_protection() { // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedFunctionFound -- The function is already prefixed with mo_api_authentication_.
+	$wp_rest_server = rest_get_server();
+	$all_routes     = array_map( 'esc_html', array_keys( $wp_rest_server->get_routes() ) );
+
+	$unprotected_routes = array_values(
+		array_filter( $all_routes, 'mo_api_authentication_is_default_unprotected_route' )
+	);
+
+	$protected_routes = get_option( 'mo_api_authentication_protectedrestapi_route_whitelist', array() );
+	if ( ! is_array( $protected_routes ) ) {
+		$protected_routes = array();
+	}
+
+	if ( empty( $protected_routes ) ) {
+		$protected_routes = array_values( array_diff( $all_routes, $unprotected_routes ) );
+	} else {
+		$protected_routes = array_values( array_diff( $protected_routes, $unprotected_routes ) );
+	}
+
+	$stored_unprotected = get_option( 'mo_api_authentication_unprotectedrestapi_route', array() );
+	if ( ! is_array( $stored_unprotected ) ) {
+		$stored_unprotected = array();
+	}
+
+	$stored_protected = get_option( 'mo_api_authentication_protectedrestapi_route_whitelist', array() );
+	if ( ! is_array( $stored_protected ) ) {
+		$stored_protected = array();
+	}
+
+	sort( $protected_routes );
+	sort( $unprotected_routes );
+	$sorted_stored_protected  = $stored_protected;
+	$sorted_stored_unprotected = $stored_unprotected;
+	sort( $sorted_stored_protected );
+	sort( $sorted_stored_unprotected );
+
+	if ( $protected_routes === $sorted_stored_protected && $unprotected_routes === $sorted_stored_unprotected ) {
+		return;
+	}
+
+	update_option( 'mo_api_authentication_protectedrestapi_route_whitelist', $protected_routes );
+	update_option( 'mo_api_authentication_unprotectedrestapi_route', $unprotected_routes );
+}
+
+/**
+ * Remove default-unprotected routes from the protected whitelist (upgrade / migration).
+ *
+ * @return void
+ */
+function mo_api_authentication_migrate_default_unprotected_routes() { // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedFunctionFound -- The function is already prefixed with mo_api_authentication_.
+	mo_api_authentication_sync_rest_route_protection();
+}
+
+/**
  * Reset Protected APIs.
  *
  * @return void
  */
 function mo_api_authentication_reset_api_protection() { // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedFunctionFound -- The functino is already prefixed with mo_api_authentication_.
 	$wp_rest_server = rest_get_server();
-	$all_routes     = array_keys( $wp_rest_server->get_routes() );
-	$all_routes     = array_map( 'esc_html', $all_routes );
+	$all_routes     = array_map( 'esc_html', array_keys( $wp_rest_server->get_routes() ) );
 
-	$unsecured_routes = array();
+	$unprotected_routes = array_values(
+		array_filter( $all_routes, 'mo_api_authentication_is_default_unprotected_route' )
+	);
 
-	foreach ( $all_routes as $key => $value ) {
-		if ( in_array( $value, array( '/api/v1', '/api/v1/token', '/api/v1/token-validate' ), true ) ) {
-			array_push( $unsecured_routes, $all_routes[ $key ] );
-			unset( $all_routes[ $key ] );
-		}
-	}
+	$protected_routes = array_values( array_diff( $all_routes, $unprotected_routes ) );
 
-	$unsecured_routes = array_map( 'esc_html', $unsecured_routes );
-
-	update_option( 'mo_api_authentication_protectedrestapi_route_whitelist', $all_routes );
+	update_option( 'mo_api_authentication_protectedrestapi_route_whitelist', $protected_routes );
+	update_option( 'mo_api_authentication_unprotectedrestapi_route', $unprotected_routes );
 }
 
 /**

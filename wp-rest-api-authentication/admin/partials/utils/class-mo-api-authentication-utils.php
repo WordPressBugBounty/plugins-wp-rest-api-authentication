@@ -240,6 +240,38 @@ class Mo_API_Authentication_Utils {
 	}
 
 	/**
+	 * Return API access analytics counters.
+	 *
+	 * @return array<string, int>
+	 */
+	public static function get_api_access_analytics() {
+		$counters = get_option( 'api_access_counters', array() );
+
+		if ( ! is_array( $counters ) || empty( $counters ) ) {
+			return array(
+				'total_api_access'       => 0,
+				'open_api_access'        => 0,
+				'authorized_api_access'  => 0,
+				'blocked_api_access'     => 0,
+			);
+		}
+
+		$success_counts        = is_array( $counters ) ? ( $counters[ Mo_API_Authentication_Constants::SUCCESS ] ?? array() ) : array();
+		$blocked_counts        = is_array( $counters ) ? ( $counters[ Mo_API_Authentication_Constants::BLOCKED ] ?? array() ) : array();
+		$total_success         = array_sum( $success_counts );
+		$open_api_access       = is_array( $success_counts ) ? ( $success_counts[ Mo_API_Authentication_Constants::OPEN_API ] ?? 0 ) : 0;
+		$authorized_api_access = is_array( $success_counts ) ? ( $success_counts[ Mo_API_Authentication_Constants::PROTECTED_API ] ?? 0 ) : 0;
+		$total_blocked         = array_sum( $blocked_counts );
+
+		return array(
+			'total_api_access'      => $total_success + $total_blocked,
+			'open_api_access'       => (int) $open_api_access,
+			'authorized_api_access' => (int) $authorized_api_access,
+			'blocked_api_access'    => (int) $total_blocked,
+		);
+	}
+
+	/**
 	 * Send rate limit exceeded response.
 	 * This function sends a standardized 429 Too Many Requests response.
 	 *
@@ -255,4 +287,13 @@ class Mo_API_Authentication_Utils {
 		header( 'Retry-After: 60' );
 		wp_send_json( $response, 429 );
 	}
+}
+
+/**
+ * Return API access analytics counters.
+ *
+ * @return array<string, int>
+ */
+function mo_api_authentication_get_api_access_analytics() { // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedFunctionFound -- Function is prefixed with mo_api_authentication_.
+	return Mo_API_Authentication_Utils::get_api_access_analytics();
 }
