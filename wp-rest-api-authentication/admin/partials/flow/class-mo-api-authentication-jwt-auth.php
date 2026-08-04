@@ -117,6 +117,27 @@ class Mo_API_Authentication_JWT_Auth {
 	}
 
 	/**
+	 * Send a JWT authentication error response.
+	 *
+	 * @param string $error             Error code.
+	 * @param string $error_description Human-readable error description.
+	 * @return void
+	 */
+	private function mo_api_auth_send_jwt_error( $error, $error_description ) {
+		if ( Mo_API_Authentication_Utils::is_auditable_api_request( '/api/v1/token-validate' ) ) {
+			Mo_API_Authentication_Utils::increment_blocked_counter( Mo_API_Authentication_Constants::INVALID_CREDENTIALS );
+		}
+		mo_api_auth_increment_rate_limit();
+		$response = array(
+			'status'            => 'error',
+			'error'             => $error,
+			'code'              => '401',
+			'error_description' => $error_description,
+		);
+		wp_send_json( $response, 401 );
+	}
+
+	/**
 	 * Check JWT token signature validation.
 	 *
 	 * @param mixed $jwt_token variable containing the JWT token.
@@ -132,26 +153,34 @@ class Mo_API_Authentication_JWT_Auth {
 			$base64_url_signature = mo_api_authentication_base64_url_encode( $signature );
 
 			if ( isset( $jwt_token[2] ) && hash_equals( $base64_url_signature, $jwt_token[2] ) ) {
-				$user_data = json_decode( $this->mo_api_authentication_base64_url_decode( $jwt_token[1] ) );
-				$user      = get_user_by( 'login', $user_data->name );
+				$now = time();
+
+				// Reject tokens without a valid exp claim, or whose expiry has passed (RFC 7519).
+				if ( ! isset( $payload_json->exp ) || ! is_numeric( $payload_json->exp ) || $now >= (int) $payload_json->exp ) {
+					$this->mo_api_auth_send_jwt_error( 'TOKEN_EXPIRED', 'JWT token has expired.' );
+				}
+
+				// Reject tokens that are not yet valid (RFC 7519 nbf claim).
+				if ( isset( $payload_json->nbf ) && is_numeric( $payload_json->nbf ) && $now < (int) $payload_json->nbf ) {
+					$this->mo_api_auth_send_jwt_error( 'TOKEN_NOT_YET_VALID', 'JWT token is not yet valid.' );
+				}
+
+				if ( empty( $payload_json->name ) ) {
+					$this->mo_api_auth_send_jwt_error( 'INVALID_USER', 'JWT token does not contain a valid user.' );
+				}
+
+				$user = get_user_by( 'login', $payload_json->name );
+				if ( ! $user ) {
+					$this->mo_api_auth_send_jwt_error( 'INVALID_USER', 'User associated with the JWT token was not found.' );
+				}
+
 				wp_set_current_user( $user->ID );
 				if ( Mo_API_Authentication_Utils::is_auditable_api_request( '/api/v1/token-validate' ) ) {
 					Mo_API_Authentication_Utils::increment_success_counter( Mo_API_Authentication_Constants::PROTECTED_API );
 				}
 				return true;
 			} else {
-				if ( Mo_API_Authentication_Utils::is_auditable_api_request( '/api/v1/token-validate' ) ) {
-					Mo_API_Authentication_Utils::increment_blocked_counter( Mo_API_Authentication_Constants::INVALID_CREDENTIALS );
-				}
-				// Increment rate limit counter for invalid signature.
-				mo_api_auth_increment_rate_limit();
-				$response = array(
-					'status'            => 'error',
-					'error'             => 'INVALID_SIGNATURE',
-					'code'              => '401',
-					'error_description' => 'JWT Signature is invalid.',
-				);
-				wp_send_json( $response, 401 );
+				$this->mo_api_auth_send_jwt_error( 'INVALID_SIGNATURE', 'JWT Signature is invalid.' );
 			}
 		}
 		return false;

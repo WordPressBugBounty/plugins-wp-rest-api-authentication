@@ -285,6 +285,43 @@ class Mo_API_Authentication_Auth_Error_Codes {
 				),
 			),
 			array(
+				'error'             => 'TOKEN_EXPIRED',
+				'code'              => '401',
+				'error_description' => 'JWT token has expired.',
+				'context'           => 'protected_api_request',
+				'explanation'       => array(
+					__( 'The JWT exp claim is missing, invalid, or the current time is on or after the expiration time.', 'wp-rest-api-authentication' ),
+				),
+				'resolution_steps'  => array(
+					__( 'Request a new JWT from the /api/v1/token endpoint.', 'wp-rest-api-authentication' ),
+					__( 'Do not reuse tokens past their expires_in value.', 'wp-rest-api-authentication' ),
+				),
+			),
+			array(
+				'error'             => 'TOKEN_NOT_YET_VALID',
+				'code'              => '401',
+				'error_description' => 'JWT token is not yet valid.',
+				'context'           => 'protected_api_request',
+				'explanation'       => array(
+					__( 'The JWT nbf (not before) claim is in the future.', 'wp-rest-api-authentication' ),
+				),
+				'resolution_steps'  => array(
+					__( 'Wait until the nbf time before using the token, or request a new token without a future nbf.', 'wp-rest-api-authentication' ),
+				),
+			),
+			array(
+				'error'             => 'INVALID_USER',
+				'code'              => '401',
+				'error_description' => 'User associated with the JWT token was not found.',
+				'context'           => 'protected_api_request',
+				'explanation'       => array(
+					__( 'The JWT name claim does not match an existing WordPress user.', 'wp-rest-api-authentication' ),
+				),
+				'resolution_steps'  => array(
+					__( 'Confirm the user still exists, then request a new JWT token.', 'wp-rest-api-authentication' ),
+				),
+			),
+			array(
 				'error'             => 'INVALID_AUTHORIZATION_HEADER_TOKEN_TYPE',
 				'code'              => '401',
 				'error_description' => 'Authorization header must be type of Bearer Token.',

@@ -500,6 +500,25 @@ class Mo_API_Authentication_Jwt_Auth_Config {
 
 					}
 				}
+				else if(err === "TOKEN_EXPIRED" || err === "TOKEN_NOT_YET_VALID")
+				{
+					if(place === "valid"){
+						document.getElementById("json_jwt_token_validate_troubleshoot").innerHTML = `<ul style="list-style: inside;"><li>JWT token has expired or is not yet valid.</li><li>Generate a fresh JWT token and try again.</li></ul>`;
+						document.getElementById("json_jwt_token_validate_troubleshoot").classList.remove("d-none");
+						document.getElementById("json_jwt_token_validate_troubleshoot").classList.add("d-flex");
+						document.getElementById("jwt_token_validate_text").classList.remove("d-none");
+						document.getElementById("jwt_token_validate_text").classList.add("d-flex");
+
+					}
+					else{
+						document.getElementById("data_display_troubleshoot").innerHTML = `<ul style="list-style: inside;"><li>JWT token has expired or is not yet valid.</li><li>Generate a fresh JWT token and try again.</li></ul>`;
+						document.getElementById("data_display_troubleshoot").classList.remove("d-none");
+						document.getElementById("data_display_troubleshoot").classList.add("d-flex");
+						document.getElementById("data_display_text").classList.remove("d-none");
+						document.getElementById("data_display_text").classList.add("d-flex");
+
+					}
+				}
 				else if(err === "UNAUTHORIZED")
 				{
 					if(place === "valid"){
