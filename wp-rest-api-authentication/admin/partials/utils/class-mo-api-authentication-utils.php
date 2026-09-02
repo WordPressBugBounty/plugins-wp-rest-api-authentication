@@ -272,6 +272,55 @@ class Mo_API_Authentication_Utils {
 	}
 
 	/**
+	 * Verify a username (or email address) and password pair.
+	 *
+	 * Exactly one password hash comparison is performed on every code path, including when
+	 * no matching account exists. Skipping the hash for unknown users makes those requests
+	 * measurably faster, which lets an attacker enumerate valid accounts from the response
+	 * time even when the error response is identical.
+	 *
+	 * @param string $username Username or email address.
+	 * @param string $password Plain text password.
+	 * @return WP_User|false Authenticated user on success, false otherwise.
+	 */
+	public static function verify_user_credentials( $username, $password ) {
+		if ( ! is_string( $username ) || ! is_string( $password ) || '' === $username || '' === $password ) {
+			return false;
+		}
+
+		if ( get_user_by( 'login', $username ) ) {
+			$user = wp_authenticate_username_password( null, $username, $password );
+		} elseif ( is_email( $username ) && get_user_by( 'email', $username ) ) {
+			// Additional support for password verification of websites hosted on wordpress.org.
+			$user = wp_authenticate_email_password( null, $username, $password );
+		} else {
+			wp_check_password( $password, self::get_decoy_password_hash() );
+			return false;
+		}
+
+		return $user instanceof WP_User ? $user : false;
+	}
+
+	/**
+	 * Hash of an unused random password, verified against when an account does not exist.
+	 *
+	 * It is generated with wp_hash_password() so that checking it costs the same as checking
+	 * the password of a real account on this site.
+	 *
+	 * @return string
+	 */
+	private static function get_decoy_password_hash() {
+		$hash = get_option( 'mo_api_auth_decoy_password_hash' );
+
+		if ( ! is_string( $hash ) || '' === $hash ) {
+			$hash = wp_hash_password( wp_generate_password( 64, true, true ) );
+			update_option( 'mo_api_auth_decoy_password_hash', $hash );
+		}
+
+		return $hash;
+	}
+
+	/**
 	 * Send rate limit exceeded response.
 	 * This function sends a standardized 429 Too Many Requests response.
 	 *

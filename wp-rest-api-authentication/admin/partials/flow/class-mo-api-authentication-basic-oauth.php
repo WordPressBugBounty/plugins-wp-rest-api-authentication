@@ -42,40 +42,26 @@ class Mo_API_Authentication_Basic_OAuth {
 						// username and password.
 						$uname = sanitize_user( $creds[0] );
 						$pword = $creds[1];
-						$user  = get_user_by( 'login', $uname );
+						$user  = Mo_API_Authentication_Utils::verify_user_credentials( $uname, $pword );
+
 						if ( $user ) {
-							$valid_pass = wp_authenticate_username_password( null, $uname, $pword );
-							if ( true !== $valid_pass ) { // Using this flow to provide additional support for password verification of websites hosted on wordpress.org.
-								$valid_pass_emails = wp_authenticate_email_password( null, $uname, $pword );
-								$valid_pass        = null !== $valid_pass_emails && ! is_wp_error( $valid_pass_emails ) ? $valid_pass_emails : $valid_pass;
-							}
-							if ( ! is_wp_error( $valid_pass ) ) {
-								wp_set_current_user( $user->ID );
-								// The Protected API success request counter is increasing.
-								Mo_API_Authentication_Utils::increment_success_counter( Mo_API_Authentication_Constants::PROTECTED_API );
-								return true;
-							} else {
-								// Invalid credentials counter is increasing.
-								Mo_API_Authentication_Utils::increment_blocked_counter( Mo_API_Authentication_Constants::INVALID_CREDENTIALS );
-								$response = array(
-									'status'            => 'error',
-									'error'             => 'INVALID_PASSWORD',
-									'code'              => '400',
-									'error_description' => 'Incorrect password.',
-								);
-								wp_send_json( $response, 400 );
-							}
-						} else {
-							// Invalid credentials counter is increasing.
-							Mo_API_Authentication_Utils::increment_blocked_counter( Mo_API_Authentication_Constants::INVALID_CREDENTIALS );
-							$response = array(
-								'status'            => 'error',
-								'error'             => 'INVALID_USERNAME',
-								'code'              => '400',
-								'error_description' => 'Username Does not exist.',
-							);
-							wp_send_json( $response, 400 );
+							wp_set_current_user( $user->ID );
+							// The Protected API success request counter is increasing.
+							Mo_API_Authentication_Utils::increment_success_counter( Mo_API_Authentication_Constants::PROTECTED_API );
+							return true;
 						}
+
+						// An unknown username and an incorrect password take the same code path and
+						// return the same response, so neither the message nor the response time
+						// reveals whether the account exists.
+						Mo_API_Authentication_Utils::increment_blocked_counter( Mo_API_Authentication_Constants::INVALID_CREDENTIALS );
+						$response = array(
+							'status'            => 'error',
+							'error'             => 'INVALID_CREDENTIALS',
+							'code'              => '400',
+							'error_description' => 'Invalid username or password.',
+						);
+						wp_send_json( $response, 400 );
 					} elseif ( get_option( 'mo_api_authentication_authentication_key' ) === 'cid_secret' ) {
 						// client id and client secret.
 						if ( get_option( 'mo_api_auth_clientid' ) === $creds[0] && get_option( 'mo_api_auth_clientsecret' ) === $creds[1] ) {

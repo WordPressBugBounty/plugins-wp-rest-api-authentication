@@ -364,17 +364,9 @@ class Mo_API_Authentication_Basic_Oauth_Config {
 				document.querySelector("#mo_api_basic_auth_message .mo_api_auth_note").classList.add("d-block");
 			}
 			function mo_rest_api_troubleshootPrintBasic(err){
-				if(err === "INVALID_PASSWORD")
+				if(err === "INVALID_CREDENTIALS")
 				{
-					document.getElementById("basic_display_troubleshoot").innerHTML = `<ul style="list-style: inside;"><li>Check if username and password entered are correct.</li><li>If yes try password without special characters.</li></ul>`;
-					document.getElementById("basic_display_troubleshoot").classList.remove("d-none");
-					document.getElementById("basic_display_troubleshoot").classList.add("d-block");
-					document.getElementById("basic_display_text").classList.remove("d-none");
-					document.getElementById("basic_display_text").classList.add("d-flex");
-				}
-				else if(err  === "INVALID_USERNAME")
-				{
-					document.getElementById("basic_display_troubleshoot").innerHTML = '<ul style="list-style: inside;"><li>Check if user with this username exists or the entered username spelling is correct.</li><li>Make sure that you are using WordPress username and not email, as Basic Authentication with email and password is available with the Premium plan only.</li></ul>';
+					document.getElementById("basic_display_troubleshoot").innerHTML = `<ul style="list-style: inside;"><li>Check if the username and password entered are correct.</li><li>Make sure that you are using a WordPress username and not an email address.</li><li>If the credentials are correct, try a password without special characters.</li></ul>`;
 					document.getElementById("basic_display_troubleshoot").classList.remove("d-none");
 					document.getElementById("basic_display_troubleshoot").classList.add("d-block");
 					document.getElementById("basic_display_text").classList.remove("d-none");

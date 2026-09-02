@@ -3,7 +3,7 @@ Contributors: miniOrange
 Tags: rest-api, api key, jwt authentication, REST, secure api, token, endpoints, json web token, oauth,
 Requires at least: 3.0.1
 Tested up to: 7.0
-Stable tag: 4.6.0
+Stable tag: 4.7.0
 Requires PHP: 5.6
 License: Expat
 License URI: https://plugins.miniorange.com/mit-license
@@ -166,13 +166,16 @@ This plugin does not store any user data.
 
 == Changelog ==
 
+= 4.7.0 =
+* Security Fixes
+* WordPress 7.1 Compatibility.
+
 = 4.6.0 =
 * Security Improvements
 
 = 4.5.0 =
 * Bug fixes
 * Ability to configure plugin via AI Agents using WordPress Abilities
-
 = 4.4.0 =
 * Compatibility with WordPress 7.0
 

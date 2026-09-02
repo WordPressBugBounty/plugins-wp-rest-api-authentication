@@ -119,6 +119,9 @@ class Mo_API_Authentication_JWT_Auth {
 	/**
 	 * Send a JWT authentication error response.
 	 *
+	 * Increments the abuse rate-limit counter except for claim-time failures
+	 * (TOKEN_EXPIRED, TOKEN_NOT_YET_VALID), which are expected client retries.
+	 *
 	 * @param string $error             Error code.
 	 * @param string $error_description Human-readable error description.
 	 * @return void
@@ -127,7 +130,14 @@ class Mo_API_Authentication_JWT_Auth {
 		if ( Mo_API_Authentication_Utils::is_auditable_api_request( '/api/v1/token-validate' ) ) {
 			Mo_API_Authentication_Utils::increment_blocked_counter( Mo_API_Authentication_Constants::INVALID_CREDENTIALS );
 		}
-		mo_api_auth_increment_rate_limit();
+
+		// Rate-limit suspected abuse (invalid signature, unknown user) only.
+		// Claim-time failures (expired / not-yet-valid) are expected client retries, not brute force.
+		$claim_time_errors = array( 'TOKEN_EXPIRED', 'TOKEN_NOT_YET_VALID' );
+		if ( ! in_array( $error, $claim_time_errors, true ) ) {
+			mo_api_auth_increment_rate_limit();
+		}
+
 		$response = array(
 			'status'            => 'error',
 			'error'             => $error,
@@ -146,6 +156,11 @@ class Mo_API_Authentication_JWT_Auth {
 	public function mo_api_auth_jwt_signature_validation( $jwt_token ) {
 		$header_json  = json_decode( $this->mo_api_authentication_base64_url_decode( $jwt_token[0] ) );
 		$payload_json = json_decode( $this->mo_api_authentication_base64_url_decode( $jwt_token[1] ) );
+
+		if ( ! is_object( $header_json ) || ! is_object( $payload_json ) ) {
+			$this->mo_api_auth_send_jwt_error( 'INVALID_TOKEN', 'JWT payload is invalid.' );
+		}
+
 		$signing_algo = $header_json->alg;
 
 		if ( get_option( 'mo_api_authentication_jwt_signing_algorithm' ) === $signing_algo ) {
@@ -165,11 +180,11 @@ class Mo_API_Authentication_JWT_Auth {
 					$this->mo_api_auth_send_jwt_error( 'TOKEN_NOT_YET_VALID', 'JWT token is not yet valid.' );
 				}
 
-				if ( empty( $payload_json->name ) ) {
+				if ( ! isset( $payload_json->name ) || '' === $payload_json->name ) {
 					$this->mo_api_auth_send_jwt_error( 'INVALID_USER', 'JWT token does not contain a valid user.' );
 				}
 
-				$user = get_user_by( 'login', $payload_json->name );
+				$user = get_user_by( 'login', sanitize_user( (string) $payload_json->name ) );
 				if ( ! $user ) {
 					$this->mo_api_auth_send_jwt_error( 'INVALID_USER', 'User associated with the JWT token was not found.' );
 				}

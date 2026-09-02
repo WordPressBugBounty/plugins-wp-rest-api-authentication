@@ -134,28 +134,16 @@ class Mo_API_Authentication_Auth_Error_Codes {
 
 		return array(
 			array(
-				'error'             => 'INVALID_PASSWORD',
+				'error'             => 'INVALID_CREDENTIALS',
 				'code'              => '400',
-				'error_description' => 'Incorrect password.',
+				'error_description' => 'Invalid username or password.',
 				'context'           => 'protected_api_request',
 				'explanation'       => array(
-					__( 'The supplied username exists, but the password did not match.', 'wp-rest-api-authentication' ),
+					__( 'The supplied username and password could not be validated.', 'wp-rest-api-authentication' ),
 				),
 				'resolution_steps'  => array(
 					__( 'Check that the username and password are correct.', 'wp-rest-api-authentication' ),
 					__( 'If the password is correct, try a password without special characters.', 'wp-rest-api-authentication' ),
-				),
-			),
-			array(
-				'error'             => 'INVALID_USERNAME',
-				'code'              => '400',
-				'error_description' => 'Username Does not exist.',
-				'context'           => 'protected_api_request',
-				'explanation'       => array(
-					__( 'No WordPress user exists with the supplied username.', 'wp-rest-api-authentication' ),
-				),
-				'resolution_steps'  => array(
-					__( 'Check that the username exists and is spelled correctly.', 'wp-rest-api-authentication' ),
 					__( 'Use the WordPress username, not the email address. Email-based Basic Authentication is available on the Premium plan only.', 'wp-rest-api-authentication' ),
 				),
 			),

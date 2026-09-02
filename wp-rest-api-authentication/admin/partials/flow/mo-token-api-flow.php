@@ -69,24 +69,11 @@ function mo_api_auth_method_get_token( $request ) { //phpcs:ignore WordPress.Nam
 			wp_send_json( $response, 401 );
 		}
 
-		$user = get_user_by( 'login', $username );
+		$user = Mo_API_Authentication_Utils::verify_user_credentials( $username, $password );
+
 		if ( $user ) {
 			wp_set_current_user( $user->ID );
 
-			$valid_pass = wp_authenticate_username_password( null, $username, $password );
-			if ( is_wp_error( $valid_pass ) ) { // Using this flow to provide additional support for password verification of websites hosted on wordpress.org.
-				$valid_pass_emails = wp_authenticate_email_password( null, $username, $password );
-				$valid_pass        = null !== $valid_pass_emails && ! is_wp_error( $valid_pass_emails ) ? $valid_pass_emails : $valid_pass;
-			}
-
-			if ( is_wp_error( $valid_pass ) ) {
-				$valid_pass = false;
-			} else {
-				$valid_pass = true;
-			}
-		}
-
-		if ( isset( $valid_pass ) && $valid_pass ) {
 			$token_data = '';
 			$token_data = mo_api_auth_create_jwt_token( $client_secret, $user );
 			// The Open API success request counter is increasing.
