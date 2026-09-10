@@ -21,6 +21,24 @@ require_once 'class-mo-api-authentication-tokenapi.php';
 require_once 'class-mo-api-authentication-jwt-auth.php';
 
 /**
+ * Return a Test Configuration method override only for privileged admins.
+ *
+ * Unauthenticated callers cannot switch the site off the saved method.
+ *
+ * @return string Empty string, or one of basic_auth, tokenapi, jwt_auth.
+ */
+function mo_api_auth_get_privileged_test_config() { //phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedFunctionFound -- The functino is already prefixed with mo_api_auth_.
+	if ( empty( $_GET['mo_rest_api_test_config'] ) || ! current_user_can( 'manage_options' ) ) { //phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Capability-gated admin test flag from the config UI.
+		return '';
+	}
+
+	$method  = sanitize_text_field( wp_unslash( $_GET['mo_rest_api_test_config'] ) ); //phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Value is allow-listed below.
+	$allowed = array( 'basic_auth', 'jwt_auth' );
+
+	return in_array( $method, $allowed, true ) ? $method : '';
+}
+
+/**
  * Check user capability
  *
  * @return bool
@@ -183,7 +201,7 @@ function mo_api_authentication_base64_url_encode( $text ) { //phpcs:ignore WordP
  */
 function mo_api_auth_restrict_rest_api_for_invalid_users() { //phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedFunctionFound -- The functino is already prefixed with mo_api_auth_.
 
-	if ( is_user_logged_in() && empty( isset( $_GET['mo_rest_api_test_config'] ) ? sanitize_text_field( wp_unslash( $_GET['mo_rest_api_test_config'] ) ) : '' ) ) { //phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Ignoring nonce validation as we are fetching data from URL and not form submission
+	if ( is_user_logged_in() && '' === mo_api_auth_get_privileged_test_config() ) {
 		if ( get_option( 'mo_api_authentication_protectedrestapi_route_whitelist' ) && Miniorange_API_Authentication_Admin::protect_routes( true ) === true ) {
 			// The Open API success request counter is increasing.
 			Mo_API_Authentication_Utils::increment_success_counter( Mo_API_Authentication_Constants::OPEN_API );
@@ -288,16 +306,14 @@ function mo_api_auth_is_valid_request() { //phpcs:ignore WordPress.NamingConvent
 		return true;
 	}
 
-	if ( ! empty( $_GET['mo_rest_api_test_config'] ) ) { //phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Ignoring nonce validation as we are fetching data from URL and not form submission
-		if ( sanitize_text_field( wp_unslash( $_GET['mo_rest_api_test_config'] ) ) === 'basic_auth' ) { //phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Ignoring nonce validation as we are fetching data from URL and not form submission
-			$response = Mo_API_Authentication_Basic_OAuth::mo_api_auth_is_valid_request( $headers );
-		} elseif ( sanitize_text_field( wp_unslash( $_GET['mo_rest_api_test_config'] ) ) === 'tokenapi' ) { //phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Ignoring nonce validation as we are fetching data from URL and not form submission
-			$response = Mo_API_Authentication_TokenAPI::mo_api_auth_is_valid_request( $headers );
-		} elseif ( sanitize_text_field( wp_unslash( $_GET['mo_rest_api_test_config'] ) ) === 'jwt_auth' ) { //phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Ignoring nonce validation as we are fetching data from URL and not form submission
-			$response = Mo_API_Authentication_JWT_Auth::mo_api_auth_is_valid_request( $headers );
-		}
+	$privileged_test_config = mo_api_auth_get_privileged_test_config();
+
+	if ( 'basic_auth' === $privileged_test_config ) {
+		$response = Mo_API_Authentication_Basic_OAuth::mo_api_auth_is_valid_request( $headers );
+	} elseif ( 'jwt_auth' === $privileged_test_config ) {
+		$response = Mo_API_Authentication_JWT_Auth::mo_api_auth_is_valid_request( $headers );
 	} elseif ( get_option( 'mo_api_authentication_selected_authentication_method' ) === 'basic_auth' ) {
-			$response = Mo_API_Authentication_Basic_OAuth::mo_api_auth_is_valid_request( $headers );
+		$response = Mo_API_Authentication_Basic_OAuth::mo_api_auth_is_valid_request( $headers );
 	} elseif ( get_option( 'mo_api_authentication_selected_authentication_method' ) === 'tokenapi' ) {
 		$response = Mo_API_Authentication_TokenAPI::mo_api_auth_is_valid_request( $headers );
 	} elseif ( get_option( 'mo_api_authentication_selected_authentication_method' ) === 'jwt_auth' ) {
@@ -306,6 +322,53 @@ function mo_api_auth_is_valid_request() { //phpcs:ignore WordPress.NamingConvent
 
 	return $response;
 }
+
+/**
+ * Mark the current REST request as authenticated by a plugin token method.
+ *
+ * Test Configuration runs in wp-admin via fetch() with credentials: 'include',
+ * so WordPress login cookies are sent together with Authorization: Bearer/Basic.
+ * Core then runs rest_cookie_check_errors() and requires a valid wp_rest nonce.
+ * On some hosts that nonce fails even though JWT/Basic already succeeded.
+ *
+ * $user_id must be the user established by the token (JWT / Basic user-pass).
+ * Pass 0 for methods that only unlock the route (API key / client credentials)
+ * so a browser cookie session cannot be reused without a valid nonce.
+ *
+ * @param int $user_id WordPress user ID authenticated by the token, or 0.
+ * @return void
+ */
+function mo_api_auth_mark_token_authenticated( $user_id = 0 ) { //phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedFunctionFound -- The function is already prefixed with mo_api_auth_.
+	$GLOBALS['mo_api_auth_token_authenticated'] = true;
+	$GLOBALS['mo_api_auth_token_user_id']       = absint( $user_id );
+}
+
+/**
+ * Skip WordPress cookie nonce validation after successful token authentication.
+ *
+ * Returning true at priority 99 makes rest_cookie_check_errors() (priority 100)
+ * treat another authentication method as already used, which is the path WordPress
+ * documents for non-cookie REST auth.
+ *
+ * If the token did not establish a user, the cookie identity is dropped so
+ * skipping the nonce cannot grant the logged-in browser user's capabilities.
+ *
+ * @param WP_Error|mixed|null $result Current authentication result.
+ * @return WP_Error|mixed|null|true
+ */
+function mo_api_auth_bypass_cookie_nonce_for_token_auth( $result ) { //phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedFunctionFound -- The function is already prefixed with mo_api_auth_.
+	if ( empty( $GLOBALS['mo_api_auth_token_authenticated'] ) ) {
+		return $result;
+	}
+
+	$token_user_id = isset( $GLOBALS['mo_api_auth_token_user_id'] ) ? (int) $GLOBALS['mo_api_auth_token_user_id'] : 0;
+	if ( $token_user_id <= 0 ) {
+		wp_set_current_user( 0 );
+	}
+
+	return true;
+}
+add_filter( 'rest_authentication_errors', 'mo_api_auth_bypass_cookie_nonce_for_token_auth', 99 );
 
 if ( ! function_exists( 'mo_api_auth_getallheaders' ) ) {
 	/**

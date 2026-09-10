@@ -190,6 +190,9 @@ class Mo_API_Authentication_JWT_Auth {
 				}
 
 				wp_set_current_user( $user->ID );
+				if ( function_exists( 'mo_api_auth_mark_token_authenticated' ) ) {
+					mo_api_auth_mark_token_authenticated( (int) $user->ID );
+				}
 				if ( Mo_API_Authentication_Utils::is_auditable_api_request( '/api/v1/token-validate' ) ) {
 					Mo_API_Authentication_Utils::increment_success_counter( Mo_API_Authentication_Constants::PROTECTED_API );
 				}

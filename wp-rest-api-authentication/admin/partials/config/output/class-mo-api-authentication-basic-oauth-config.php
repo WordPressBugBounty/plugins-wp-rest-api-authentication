@@ -195,6 +195,7 @@ class Mo_API_Authentication_Basic_Oauth_Config {
 		<script>
 			var rest_basic_auth_endpoint_obj = document.getElementById('rest_basic_auth_endpoint');
 			rest_basic_auth_endpoint_obj.style.width = ((rest_basic_auth_endpoint_obj.value.length + 1) * 7) + 'px';
+			var mo_rest_api_wp_rest_nonce = '<?php echo esc_js( wp_create_nonce( 'wp_rest' ) ); ?>';
 
 			function MO_RAO_append_params_basic( endpoint, params ) {
 					regex             = /.+\?.+=.+/i;
@@ -291,8 +292,10 @@ class Mo_API_Authentication_Basic_Oauth_Config {
 
 				var myHeaders = new Headers();
 				myHeaders.append("Authorization", "Basic "+b64string);
+				myHeaders.append('X-WP-Nonce', mo_rest_api_wp_rest_nonce);
 				var requestOptions = {
 					method: 'GET',
+					credentials: 'include',
 					headers: myHeaders,
 					redirect: 'follow'
 				};

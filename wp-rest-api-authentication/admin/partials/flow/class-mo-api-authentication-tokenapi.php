@@ -38,6 +38,9 @@ class Mo_API_Authentication_TokenAPI {
 				$ip_token     = $authorization_header[1];
 				$bearer_token = get_option( 'mo_api_auth_bearer_token' );
 				if ( $ip_token === $bearer_token ) {
+					if ( function_exists( 'mo_api_auth_mark_token_authenticated' ) ) {
+						mo_api_auth_mark_token_authenticated();
+					}
 					// The Protected API success request counter is increasing.
 					Mo_API_Authentication_Utils::increment_success_counter( Mo_API_Authentication_Constants::PROTECTED_API );
 					return true;

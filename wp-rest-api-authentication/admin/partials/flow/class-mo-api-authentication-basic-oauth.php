@@ -38,7 +38,7 @@ class Mo_API_Authentication_Basic_OAuth {
 				$creds               = explode( ':', $decoded_cred_string, 2 );
 
 				if ( isset( $creds[0] ) && isset( $creds[1] ) ) {
-					if ( get_option( 'mo_api_authentication_authentication_key' ) === 'uname_pass' || ! empty( $_GET['mo_rest_api_test_config'] ) ) { //phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Ignoring nonce verification because we are getting data from URL and not form submission.
+					if ( get_option( 'mo_api_authentication_authentication_key' ) === 'uname_pass' || ( function_exists( 'mo_api_auth_get_privileged_test_config' ) && 'basic_auth' === mo_api_auth_get_privileged_test_config() ) ) {
 						// username and password.
 						$uname = sanitize_user( $creds[0] );
 						$pword = $creds[1];
@@ -46,6 +46,9 @@ class Mo_API_Authentication_Basic_OAuth {
 
 						if ( $user ) {
 							wp_set_current_user( $user->ID );
+							if ( function_exists( 'mo_api_auth_mark_token_authenticated' ) ) {
+								mo_api_auth_mark_token_authenticated( (int) $user->ID );
+							}
 							// The Protected API success request counter is increasing.
 							Mo_API_Authentication_Utils::increment_success_counter( Mo_API_Authentication_Constants::PROTECTED_API );
 							return true;
@@ -65,6 +68,9 @@ class Mo_API_Authentication_Basic_OAuth {
 					} elseif ( get_option( 'mo_api_authentication_authentication_key' ) === 'cid_secret' ) {
 						// client id and client secret.
 						if ( get_option( 'mo_api_auth_clientid' ) === $creds[0] && get_option( 'mo_api_auth_clientsecret' ) === $creds[1] ) {
+							if ( function_exists( 'mo_api_auth_mark_token_authenticated' ) ) {
+								mo_api_auth_mark_token_authenticated();
+							}
 							// The Protected API success request counter is increasing.
 							Mo_API_Authentication_Utils::increment_success_counter( Mo_API_Authentication_Constants::PROTECTED_API );
 							return true;

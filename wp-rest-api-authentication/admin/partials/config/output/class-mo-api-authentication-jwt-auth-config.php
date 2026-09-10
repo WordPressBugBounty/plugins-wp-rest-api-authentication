@@ -248,7 +248,8 @@ class Mo_API_Authentication_Jwt_Auth_Config {
 			var token_endpoint_obj = document.getElementById('rest_validate_endpoint');
 			token_endpoint_obj.style.width = ((token_endpoint_obj.value.length + 1) * 7) + 'px';
 			var token_endpoint_obj = document.getElementById('rest_endpoint_jwt_auth');
-			token_endpoint_obj.style.width = ((token_endpoint_obj.value.length + 1) * 7) + 'px';			
+			token_endpoint_obj.style.width = ((token_endpoint_obj.value.length + 1) * 7) + 'px';
+			var mo_rest_api_wp_rest_nonce = '<?php echo esc_js( wp_create_nonce( 'wp_rest' ) ); ?>';
 			function MO_RAO_append_params_jwt( endpoint, params ) {
 				regex             = /.+\?.+=.+/i;
 				regex1            = /.+\?/;
@@ -261,7 +262,6 @@ class Mo_API_Authentication_Jwt_Auth_Config {
 				}
 				return endpoint;
 			}
-
 			function moJWTAuthenticationMethodSave(action){
 				div = document.getElementById('mo_api_jwt_authentication_support_layout');
 				div.classList.add("d-none");
@@ -316,9 +316,11 @@ class Mo_API_Authentication_Jwt_Auth_Config {
 					var myHeaders = new Headers();
 					myHeaders.append('Content-Type', 'application/json');
 					myHeaders.append('Authorization','Bearer '+ token_val);
+					myHeaders.append('X-WP-Nonce', mo_rest_api_wp_rest_nonce);
 
 					var requestOptions = {
 						method: 'GET',
+						credentials: 'include',
 						headers: myHeaders,
 						redirect: 'follow'
 					};
@@ -338,10 +340,12 @@ class Mo_API_Authentication_Jwt_Auth_Config {
 					var myHeaders = new Headers();
 
 					myHeaders.append("Authorization", "Bearer "+token);
+					myHeaders.append('X-WP-Nonce', mo_rest_api_wp_rest_nonce);
 					document.getElementById("jwt_request_headers_value").textContent = token;
 
 					var requestOptions = {
 						method: 'GET',
+						credentials: 'include',
 						headers: myHeaders,
 						redirect: 'follow'
 					};
